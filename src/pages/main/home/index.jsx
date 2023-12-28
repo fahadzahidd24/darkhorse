@@ -1,15 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import { setAuth, setToken } from '../../../store/slices/auth-slice';
 import axios from 'axios';
 import Navbar from '../../../layout/navbar';
+import { setSongToEdit } from '../../../store/slices/song-slice';
 
 const Home = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const addSongHandler = () => {
         navigate('/add-song')
     }
+
+    useEffect(()=>{
+        dispatch(setSongToEdit({}));
+    },[])
+    
     return (
         <div className="main-template">
             <div id="wrapper">

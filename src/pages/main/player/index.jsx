@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../../layout/navbar'
-import { useSelector } from 'react-redux'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { setSettings } from '../../../store/slices/song-slice'
+import Slider from '@mui/material/Slider'
+import { HexColorPicker } from 'react-colorful'
+import ColorPicker from '../../../components/colorPicker'
 
 const Player = () => {
-    const { songToPlay } = useSelector((state) => state.songs)
+    const { songToPlay, settings } = useSelector((state) => state.songs)
+    const [color, setColor] = useState("#f00");
     const [currentLine, setCurrentLine] = useState(0);
+    const [value, setValue] = useState(30);
+    const [fontSize, setfontSize] = useState(40);
+    const [playSpeed, setPlaySpeed] = useState(90);
+    const dispatch = useDispatch();
     const [isPlaying, setIsPlaying] = useState(true);
-    const speed = 3000;
-
+    const speed = playSpeed * 10;
+    const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
     useEffect(() => {
         let scrollInterval;
 
@@ -25,6 +33,34 @@ const Player = () => {
         setIsPlaying((prevIsPlaying) => !prevIsPlaying);
     };
 
+    const closeSettingsHandler = () => {
+        dispatch(setSettings(false));
+    }
+    const openSettingsHandler = () => {
+        if (!settings)
+            dispatch(setSettings(true));
+        else
+            dispatch(setSettings(false));
+    }
+
+    const handleChangeSpeedSlider = (event, newValue) => {
+        setPlaySpeed(newValue);
+    };
+
+    const handleChangeFontSlider = (event, newValue) => {
+        setfontSize(newValue);
+    };
+
+    const openColorPicker = () => {
+        setIsColorPickerOpen(true);
+    };
+
+    const startStopHandler = () => {
+        if (playSpeed > 0)
+            setPlaySpeed(0);
+        else
+            setPlaySpeed(90);
+    }
 
     return (
         <div class="main-template">
@@ -34,42 +70,53 @@ const Player = () => {
                 <Navbar />
 
                 <main id="main" class="layrics-main">
-                    <div class="container-fluid">
-                        <div class="settings-controls">
+                    <div className='settingsBtnDiv'>
+                        <button className='btn' onClick={openSettingsHandler} style={{ fontSize: 25, paddingLeft: 15, paddingRight: 15, paddingTop: 10, paddingBottom: 10, border: 'none' }}><i class="fa-solid fa-bars"></i></button>
+                    </div>
+                    <div class="container-fluid controlsScreenFlex">
+                        <div class="settings-controls" style={settings ? { display: 'block' } : { display: 'none' }}>
                             <div class="settings-head">
                                 <strong class="heading">Settings</strong>
-                                <button class="btn-close"><i class="fa-solid fa-circle-xmark"></i></button>
+                                <button class="btn-close" onClick={closeSettingsHandler}><i class="fa-solid fa-circle-xmark"></i></button>
                             </div>
                             <div class="controls-holder">
-                                <div class="control-box">
+                                <div class="control-box" style={{ backgroundColor: color }}>
                                     <div class="frame">
                                         <strong class="txt">BACKGROUND COLOUR</strong>
-                                        <button class="color-picker"><i class="fa-solid fa-palette"></i></button>
+
+                                        <button class="color-picker" onClick={openColorPicker}>
+                                            <i class="fa-solid fa-palette"></i>
+                                        </button>
+                                        {isColorPickerOpen && (
+                                            <ColorPicker color={color} setColor={setColor} onClose={() => setIsColorPickerOpen(false)} />
+                                        )}
                                     </div>
                                 </div>
-                                <div class="control-box">
+                                <div class="control-box" style={{ backgroundColor: color }}>
                                     <strong class="txt">LYRICS</strong>
                                     <div class="range-controls">
                                         <strong class="txt">Font Size</strong>
-                                        <div class="slide-bar">
-                                            <div class="range-slide" style={{ width: "80%" }}>
+                                        {/* <div class="slide-bar"> */}
+                                        <Slider aria-label="Volume" value={fontSize} onChange={handleChangeFontSlider} min={20} max={150} />
+                                        {/* <div class="range-slide" style={{ width: "80%" }}>
                                                 <div class="range-thumb"></div>
-                                            </div>
-                                        </div>
-                                        <div class="icons-bar">
+                                            </div> */}
+                                        {/* </div> */}
+                                        {/* <div class="icons-bar">
                                             <button class="btn"><i class="fa-solid fa-circle-minus"></i></button>
                                             <button class="btn"><i class="fa-solid fa-circle-plus"></i></button>
-                                        </div>
+                                        </div> */}
                                     </div>
-                                    <div class="frame">
+                                    {/* <div class="frame">
                                         <strong class="txt">FONT COLOUR</strong>
                                         <button class="color-picker"><i class="fa-solid fa-palette"></i></button>
-                                    </div>
+                                    </div> */}
                                 </div>
-                                <div class="control-box">
+                                <div class="control-box" style={{ backgroundColor: color }}>
                                     <div class="range-controls">
                                         <strong class="txt">Auto Scroll Speed</strong>
-                                        <div class="slide-bar">
+                                        <Slider aria-label="Volume" value={playSpeed} onChange={handleChangeSpeedSlider} />
+                                        {/* <div class="slide-bar">
                                             <div class="range-slide" style={{ width: "80%" }}>
                                                 <div class="range-thumb"></div>
                                             </div>
@@ -77,26 +124,32 @@ const Player = () => {
                                         <div class="icons-bar">
                                             <button class="btn"><i class="fa-solid fa-circle-minus"></i></button>
                                             <button class="btn"><i class="fa-solid fa-circle-plus"></i></button>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
-                                <div class="control-box">
+                                <div class="control-box" style={{ backgroundColor: color }}>
                                     <strong class="txt">Controls</strong>
                                     <div class="btns-frame">
-                                        <button class="btn-play"><i class="fa-solid fa-circle-play"></i></button>
-                                        <div class="btns">
-                                            <button class="btn"><i class="fa-solid fa-angle-up"></i></button>
-                                            <button class="btn"><i class="fa-solid fa-angle-down"></i></button>
-                                        </div>
+                                        <button class="btn-play" onClick={startStopHandler}><i class={playSpeed === 0 ? "fa-solid fa-circle-play" : "fa-solid fa-circle-stop"}></i></button>
+                                        {/* <div class="btns">
+                                            <button class="btn"><i class="fa-solid fa-angle-up" style={{ color: color }}></i></button>
+                                            <button class="btn"><i class="fa-solid fa-angle-down" style={{ color: color }}></i></button>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="list-container lyrics-frame">
+                        <div class="list-container lyrics-frame" style={settings ? {} : { width: "100%" }}>
+                            {playSpeed === 0 && <div className="stopDiv">
+                                <div class="btns-frame">
+                                    <button class="btn-play"><i class="fa-solid fa-circle-stop"></i></button>
+                                </div>
+                            </div>}
                             <div class="holder">
-                                <div class="lyrics-list preLine" style={{ animation: `scrollText ${speed/10}s linear infinite` }}>
+                                <div class="lyrics-list preLine" style={{ animation: `scrollText ${speed / 10}s linear infinite`, fontSize: fontSize }}>
                                     {songToPlay.map((line, index) => (
-                                        <li key={index} className={`lyrics-line${index === currentLine ? ' current-line' : (index < currentLine ? ' passed-line' : '')}`}>{line}</li>
+                                        // <li key={index} className={`lyrics-line${index === currentLine ? ' current-line' : (index < currentLine ? ' passed-line' : '')}`}>{line}</li>
+                                        <li key={index} className={`lyrics-line`}>{line}</li>
                                     ))}
                                 </div>
                             </div>

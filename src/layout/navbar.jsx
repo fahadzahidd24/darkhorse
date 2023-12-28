@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setAuth, setToken } from '../store/slices/auth-slice';
 import Loader from '../components/loader';
+import { setSettings } from '../store/slices/song-slice';
 
 const Navbar = () => {
     const { user } = useSelector((state) => state.auth)
@@ -33,7 +34,7 @@ const Navbar = () => {
                 setList: false
             });
             navigate('/library');
-        } else if(text=== 'setlist'){
+        } else if (text === 'setlist') {
             setActive({
                 home: false,
                 library: false,
@@ -69,12 +70,16 @@ const Navbar = () => {
         setdropdown(!dropdown);
     }
 
+    const settingsHandler = () => {
+        dispatch(setSettings(true));
+    }
+
     return (
         <>
             {loading && <Loader />}
             <div id="header">
                 <div className="container-fluid d-flex">
-                    <strong className="logo"><a onClick={()=> navigate('/')}><img src="/logo.svg" alt="StagePro" /></a></strong>
+                    <strong className="logo"><a onClick={() => navigate('/')}><img src="/logo.svg" alt="StagePro" /></a></strong>
                     <ul className="navigation">
                         {/* <li className={active.home===true && 'active'}><a onClick={() => clickHandler('home')}>Uploads</a></li> */}
                         {/* <li className={active.library===true && 'active'}><a onClick={() => clickHandler('library')}>My Library</a></li> */}
@@ -90,7 +95,7 @@ const Navbar = () => {
                         </button>
                         <div className="dropdown" style={dropdown ? { display: 'block' } : { display: 'none' }}>
                             <a href="#" className="dropdown-item">Profile</a>
-                            <a href="#" className="dropdown-item">Settings</a>
+                            <a onClick={settingsHandler} className="dropdown-item">Settings</a>
                             <a className="dropdown-item" onClick={logoutHandler}>Logout</a>
                         </div>
                     </div>

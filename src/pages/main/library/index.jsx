@@ -6,14 +6,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLayoutEffect } from 'react';
 import ErrorModal from '../../../components/errorModal';
 import Loader from '../../../components/loader';
-import { setSongToPlay, setSongsArray } from '../../../store/slices/song-slice';
+import { setSongToEdit, setSongToPlay, setSongs, setSongsArray } from '../../../store/slices/song-slice';
 import { useNavigate } from 'react-router-dom';
+import ConfirmationModel from '../../../components/confirmationModel';
 
 const Library = () => {
   const { songs } = useSelector((state) => state.songs);
+  console.log(songs);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [confirm, setConfirm] = useState(false);
+  const [selectedSong, setSelectedSong] = useState();
+  const [songToDelete, setSongToDelete] = useState();
   const [error, setError] = useState({
     errorMessage: '',
     isError: false
@@ -29,9 +34,7 @@ const Library = () => {
               Authorization: `Bearer ${localStorage.getItem("token")}`
             }
           });
-          console.log(response.data);
           dispatch(setSongsArray(response.data.data.data));
-          console.log(songs);
         } catch (error) {
           setError({
             errorMessage: error?.response?.data?.message,
@@ -60,9 +63,56 @@ const Library = () => {
     navigate('/player')
   }
 
+  const optionsHandler = (song) => {
+    if (selectedSong && selectedSong.id === song.id) {
+      setSelectedSong(null);
+      return;
+    } else {
+      setSelectedSong(song);
+    }
+  }
+
+  const pressYesHandler = async () => {
+    try {
+      setConfirm(false);
+      setLoading(true);
+      await axios.get(`${process.env.REACT_APP_BASE_URL}/song-delete/${songToDelete.id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      dispatch(setSongsArray(songs.filter((song) => song.id != songToDelete.id)));
+    } catch (error) {
+      setError({
+        errorMessage: error?.response?.data?.message || error.message,
+        isError: true
+      });
+      console.log(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const pressNoHandler = () => {
+    setConfirm(false);
+  }
+
+  const deleteSongHandler = (song) => {
+    console.log(song);
+    setSongToDelete(song);
+    setConfirm(true);
+  }
+
+  const editSongHandler =(song) => {
+    console.log(song);
+    dispatch(setSongToEdit(song));
+    navigate('/add-song');
+  }
+
   return (
     <>
       {loading && <Loader />}
+      {confirm && <ConfirmationModel onPressYes={pressYesHandler} onPressNo={pressNoHandler} />}
       <div className="main-template">
         <div id="wrapper">
           <Navbar />
@@ -83,7 +133,8 @@ const Library = () => {
                 <div className="holder">
                   <table className="list-table">
                     {songs?.map((song, index) => (
-                      <tr key={song.id} className='trRow' onClick={()=> playSongHandler(song)}>
+                      // <tr key={song.id} className='trRow' onClick={() => playSongHandler(song)}>
+                      <tr key={song.id} className='trRow'>
                         <td>
                           <span className="num">{index + 1}</span>
                           <i className="fa-regular fa-circle-pause"></i>
@@ -96,6 +147,7 @@ const Library = () => {
                         </td>
                         <td>
                           <span className="cat-title">{song.artist}</span>
+                          {console.log(song)}
                         </td>
                         <td align="right">
                           <ul className="list">
@@ -106,7 +158,16 @@ const Library = () => {
                                 <i className="fa-solid fa-heart"></i>
                               </a>
                             </li>
-                            <li><i className="fa-solid fa-grip-lines"></i></li>
+                            <li className='linesParent' onClick={() => optionsHandler(song)}>
+                              <i className="fa-solid fa-grip-lines"></i>
+                              {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
+                                <ul className='ulDropdown'>
+                                  <li onClick={editSongHandler.bind(null, song)}>Edit</li>
+                                  <li onClick={deleteSongHandler.bind(null, song)}>Delete</li>
+                                  <li>Add to Setlist</li>
+                                </ul>
+                              </div>}
+                            </li>
                           </ul>
                         </td>
                       </tr>

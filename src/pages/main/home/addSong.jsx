@@ -6,21 +6,37 @@ import ErrorModal from '../../../components/errorModal';
 import axios from 'axios'
 import Loader from '../../../components/loader';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setSongs } from '../../../store/slices/song-slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSongToEdit, setSongs, setSongsArray } from '../../../store/slices/song-slice';
 
 const AddSong = () => {
     const navigate = useNavigate();
+    let { songToEdit, songs } = useSelector((state) => state.songs)
+    console.log(songToEdit);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const [iformData, setFormData] = useState({
+        title: songToEdit ? songToEdit.title : '',
+        artist: songToEdit ? songToEdit.artist : '',
+        genre: songToEdit ? songToEdit.generous : 'Rock',
+        album: songToEdit ? songToEdit.album : '',
+        lyrics: songToEdit ? songToEdit.lyrics : ''
+    });
     const [error, setError] = useState({
         errorMessage: '',
         isError: false
     });
 
+    const changeHandler = (e) => {
+        setFormData({
+            ...iformData,
+            [e.target.name]: e.target.value
+        })
+    }
+
     const addSongHandler = async (e) => {
         e.preventDefault();
-        if (e.target.title.value === '' || e.target.artist.value === '' || e.target.genre.value === '' || e.target.lyrics.value === '') {
+        if (iformData.title === '' || iformData.artist === '' || iformData.genre === '' || iformData.lyrics === '') {
             setError({
                 errorMessage: 'Please fill all the required fields',
                 isError: true
@@ -28,25 +44,43 @@ const AddSong = () => {
         }
         else {
             const formData = {
-                title: e.target.title.value,
-                artist: e.target.artist.value,
-                genre: e.target.genre.value || '',
-                album: e.target.album.value,
-                lyrics: e.target.lyrics.value
+                title: iformData.title,
+                artist: iformData.artist,
+                genre: iformData.genre,
+                album: iformData.album,
+                lyrics: iformData.lyrics
             }
             console.log(formData);
             setLoading(true);
             try {
-                const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/song-create`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-                console.log(response.data);
-                dispatch(setSongs(response.data.data));
-                navigate('/library')
+                if (songToEdit.id) {
+                    formData.id = songToEdit.id;
+                    const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/song-update`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+                    songs = songs.map((song)=>{
+                        return {
+                            ...song,
+                            title: song.id === songToEdit.id ? response.data.data.title : song.title,
+                            artist: song.id === songToEdit.id ? response.data.data.artist : song.artist,
+                            genre: song.id === songToEdit.id ? response.data.data.generous : song.genre,
+                            album: song.id === songToEdit.id ? response.data.data.album : song.album,
+                            lyrics: song.id === songToEdit.id ? response.data.data.lyrics : song.lyrics
+                        }
+                    })
+                    dispatch(setSongsArray(songs))
+                    // songs[songs.findIndex(song => song.id === songToEdit.id)] = response.data.data;
+                    dispatch(setSongToEdit({}));
+                    navigate('/library')
+                } else {
+                    const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/song-create`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+                    dispatch(setSongs(response.data.data));
+                    navigate('/library')
+                }
             } catch (error) {
                 setError({
-                    errorMessage: error?.response?.data?.message,
+                    errorMessage: error?.response?.data?.message || error.message,
                     isError: true
                 });
-                console.log(error?.response?.data?.message);
+                console.log(error?.response?.data?.message || error.message);
             } finally {
                 setLoading(false);
             }
@@ -69,18 +103,18 @@ const AddSong = () => {
                     <main id="main">
                         <div className="container-fluid">
                             <div className="form-container">
-                                <h1 className="text-center">ADD NEW SONG</h1>
+                                <h1 className="text-center">{songToEdit.id ? "EDIT SONG" : "ADD NEW SONG"}</h1>
                                 {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
                                 <form className="lyrics-form" onSubmit={addSongHandler}>
                                     <div className="row">
                                         <div className="form-group column-12">
-                                            <input type="text" id='title' name='title' className="form-control" placeholder="Song Title" />
+                                            <input type="text" id='title' name='title' onChange={changeHandler} className="form-control" placeholder="Song Title" value={iformData.title} />
                                         </div>
                                         <div className="form-group column-12 column-sm-7 column-lg-8">
-                                            <input type="text" id='artist' name='artist' className="form-control" placeholder="Artist" />
+                                            <input type="text" id='artist' name='artist' onChange={changeHandler} className="form-control" placeholder="Artist" value={iformData.artist} />
                                         </div>
                                         <div className="form-group column-12 column-sm-5 column-lg-4">
-                                            <select className="form-select" name='genre' id='genre'>
+                                            <select className="form-select" name='genre' onChange={changeHandler} id='genre' value={iformData.genre}>
                                                 <option disabled defaultValue='genre'>Genre</option>
                                                 {genreList.genres.map((genre, index) => (
                                                     <option key={index}>{genre}</option>
@@ -88,7 +122,7 @@ const AddSong = () => {
                                             </select>
                                         </div>
                                         <div className="form-group column-12 column-sm-7 column-lg-8">
-                                            <input type="text" id='album' name='album' className="form-control" placeholder="Album (optional)" />
+                                            <input type="text" id='album' name='album' onChange={changeHandler} className="form-control" placeholder="Album (optional)" value={iformData.album} />
                                         </div>
                                         {/* <div className="form-group column-12 column-sm-5 column-lg-4">
                                         <div className="options">
@@ -103,7 +137,7 @@ const AddSong = () => {
                                                 </div>
                                             </div> */}
                                         <div className="form-group column-12">
-                                            <textarea className="form-control" id='lyrics' name='lyrics' cols="30" rows="10" placeholder="ADD LYRICS"></textarea>
+                                            <textarea className="form-control" id='lyrics' name='lyrics' onChange={changeHandler} cols="30" rows="10" placeholder="ADD LYRICS" value={iformData.lyrics}></textarea>
                                         </div>
                                         <div className="column-12 d-flex justify-content-center">
                                             <button type="submit" className="btn">Submit</button>

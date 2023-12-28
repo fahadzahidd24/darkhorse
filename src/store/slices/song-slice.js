@@ -3,7 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     songs: [],
-    songToPlay: []
+    songToPlay: [],
+    songToEdit: {},
+    settings: false,
 }
 
 const songsSlice = createSlice({
@@ -18,9 +20,15 @@ const songsSlice = createSlice({
         },
         setSongToPlay: (state, action) => {
             state.songToPlay = action.payload;
-        }
+        },
+        setSettings: (state, action) => {
+            state.settings = action.payload;
+        },
+        setSongToEdit: (state, action) => {
+            state.songToEdit = action.payload;
+        },
     },
 });
 
-export const { setSongs, setSongsArray, setSongToPlay } = songsSlice.actions;
+export const { setSongs, setSongsArray, setSongToPlay, setSettings, setSongToEdit } = songsSlice.actions;
 export default songsSlice.reducer;

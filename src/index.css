@@ -607,7 +607,11 @@ a {
   justify-content: center;
   font-family: "Raleway", sans-serif;
 }
-
+.settingsBtnDiv{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
 .btn:before {
   top: 0;
   left: 0;
@@ -763,6 +767,19 @@ textarea.form-control {
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
+}
+
+.btnConfirm {
+  color: #fff;
+  margin: 0;
+  padding: 7px 22px;
+  border-radius: 17px;
+  letter-spacing: 0.05em;
+  border: 2px solid #888;
+  font: 400 25px/1 "Luckiest Guy", sans-serif;
+  background: url('/public/bg-button.png') no-repeat;
+  background-size: cover;
+  margin: 0px 20px
 }
 
 #header .logo {
@@ -2685,7 +2702,7 @@ textarea.form-control {
 }
 
 .list-container .holder {
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .list-container .holder.no-record {
@@ -3093,6 +3110,30 @@ textarea.form-control {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
+  width:65%;
+  position: relative;
+}
+
+.stopDiv{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  opacity: 0.95;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stopDiv .btns-frame .btn-play{
+  color: #000;
+  font-size: 120px;
+  background-color: transparent;
+  border: none;
+  /* opacity:1; */
 }
 
 .lyrics-list {
@@ -3101,16 +3142,20 @@ textarea.form-control {
 }
 
 .lyrics-line {
-  color: #ffffff; /* Default color */
-  transition: color 0.5s ease; /* Smooth color transition */
+  color: #ffffff;
+  /* Default color */
+  transition: color 0.5s ease;
+  /* Smooth color transition */
 }
 
 .lyrics-line.current-line {
-  color: #00ff00; /* Green color for the current line */
+  color: #00ff00;
+  /* Green color for the current line */
 }
 
 .lyrics-line.passed-line {
-  color: #808080; /* Grey color for lines that have passed through green */
+  color: #808080;
+  /* Grey color for lines that have passed through green */
 }
 
 .lyrics-frame::-webkit-scrollbar {
@@ -3119,10 +3164,11 @@ textarea.form-control {
 
 @keyframes scrollText {
   0% {
-      transform: translateY(0);
+    transform: translateY(0);
   }
+
   100% {
-      transform: translateY(-100%);
+    transform: translateY(-100%);
   }
 }
 
@@ -3209,7 +3255,8 @@ textarea.form-control {
 }
 
 .settings-controls {
-  width: 0;
+  width: 25%;
+  padding: 2%;
   height: 100%;
   float: right;
   overflow: auto;
@@ -3217,6 +3264,13 @@ textarea.form-control {
   background: #000;
   position: relative;
   border-radius: 15px;
+}
+
+.controlsScreenFlex{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .settings-controls .settings-head {
@@ -4093,4 +4147,37 @@ textarea.form-control {
 
 #footer .f-nav li:not(:last-child) {
   margin: 0 0 7px;
+}
+
+.dropdown {
+  /* background-color: white; */
+  border-radius: 5px;
+  background: #730201;
+  position: absolute;
+  top: 20px;
+  right: 0;
+  z-index: 999;
+  width: 150px;
+  border: 1px solid #ffffff9a;
+}
+
+.ulDropdown {
+  list-style: none;
+  padding: 0;
+  /* position: absolute; */
+  /* z-index: 999; */
+}
+
+.ulDropdown>li {
+  margin: 5px;
+  text-align: left;
+}
+
+.ulDropdown>li:hover {
+  /* background-color: #454545; */
+  color: #ffffff9a;
+}
+
+.linesParent {
+  position: relative;
 }
