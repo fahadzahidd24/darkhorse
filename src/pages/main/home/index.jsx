@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { setAuth, setToken } from '../../../store/slices/auth-slice';
 import axios from 'axios';
 import Navbar from '../../../layout/navbar';
-import { setRecentlyPlayedSongsArray, setSongToEdit, setSongToPlay } from '../../../store/slices/song-slice';
+import { setRecentlyPlayedSongsArray, setSongToEdit, setSongToPlay, setSongsArray } from '../../../store/slices/song-slice';
 import Loader from '../../../components/loader';
 import { useLayoutEffect } from 'react';
 
@@ -36,6 +36,23 @@ const Home = () => {
                 dispatch(setSongToEdit({}));
             }
         }
+        const fetchLibrarySongs = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/songs`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+                dispatch(setSongsArray(response.data.data.data));
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+                dispatch(setSongToEdit({}));
+            }
+        }
+        fetchLibrarySongs();
         fetchRecentlyPlayedSongs();
     }, [])
 

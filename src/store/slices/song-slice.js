@@ -14,7 +14,7 @@ const songsSlice = createSlice({
     initialState,
     reducers: {
         setSongs: (state, action) => {
-            state.songs.push(action.payload);
+            state.songs.unshift(action.payload);
         },
         setSongsArray: (state, action) => {
             state.songs = action.payload;
