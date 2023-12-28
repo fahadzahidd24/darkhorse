@@ -6,7 +6,7 @@ const ErrorModal = ({ onPressOk, errorMessage }) => {
         <div className={style.popup}>
             <div className={style.popup_inner}>
                 <p className={style.message}>{errorMessage}</p>
-                <button className='btn' onClick={onPressOk}>Ok</button>
+                <button className='btnConfirm' onClick={onPressOk}>Ok</button>
             </div>
         </div>
     )

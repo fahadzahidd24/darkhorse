@@ -8,7 +8,7 @@ import { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../../components/loader';
 import ErrorModal from '../../../components/errorModal';
-import { setSongToEdit, setSongToPlay } from '../../../store/slices/song-slice';
+import { setRecentlyPlayedSongs, setSongToEdit, setSongToPlay } from '../../../store/slices/song-slice';
 
 const SetlistSongs = () => {
     const { setListToGet, setListSongs } = useSelector((state) => state.setlist);
@@ -75,7 +75,20 @@ const SetlistSongs = () => {
         });
     }
 
-    const playSongHandler = (song) => {
+    const playSongHandler = async(song) => {
+        setLoading(true);
+        try {
+            await axios.post(`${process.env.REACT_APP_BASE_URL}/recently-played`, { song_id: song.id }, {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+              }
+            });
+            // dispatch(setRecentlyPlayedSongs(song));
+          } catch (error) {
+            console.log(error);
+          }finally{
+            setLoading(false);
+          }
         const songLyrics = song.lyrics.split('\n');
         dispatch(setSongToPlay(songLyrics))
         navigate('/player')

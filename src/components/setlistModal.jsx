@@ -67,6 +67,7 @@ const SetlistModal = ({ onClose, song }) => {
 
     const addSongToSetlist = async (setlist) => {
         try {
+            setLoading(true);
             await axios.post(`${process.env.REACT_APP_BASE_URL}/playlists/songs/create`, { playlist_id: setlist.id, song_id: song.id }, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -80,7 +81,8 @@ const SetlistModal = ({ onClose, song }) => {
             });
             console.log(error?.response?.data?.message || error.message);
         } finally {
-
+            setLoading(false);
+            // onClose();
         }
     }
 
@@ -95,7 +97,7 @@ const SetlistModal = ({ onClose, song }) => {
         <>
             {loading && <Loader />}
             {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
-            <div className={style.popup}>
+            <div className={style.popup2}>
                 <div ref={setListModalRef} className={style.popup_inner2}>
                     <p className={style.message2}>Add To Setlist</p>
                     <p className={style.message2} style={{ fontSize: '2rem', textDecoration: 'none', color: "grey" }}>Choose Setlist</p>

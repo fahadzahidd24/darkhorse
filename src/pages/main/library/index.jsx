@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLayoutEffect } from 'react';
 import ErrorModal from '../../../components/errorModal';
 import Loader from '../../../components/loader';
-import { setSongToEdit, setSongToPlay, setSongs, setSongsArray } from '../../../store/slices/song-slice';
+import { setRecentlyPlayedSongs, setSongToEdit, setSongToPlay, setSongs, setSongsArray } from '../../../store/slices/song-slice';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModel from '../../../components/confirmationModel';
 import SetlistModal from '../../../components/setlistModal';
@@ -58,7 +58,20 @@ const Library = () => {
     });
   }
 
-  const playSongHandler = (song) => {
+  const playSongHandler = async (song) => {
+    setLoading(true);
+    try {
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/recently-played`, { song_id: song.id }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      // dispatch(setRecentlyPlayedSongs(song));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
     const songLyrics = song.lyrics.split('\n');
     dispatch(setSongToPlay(songLyrics))
     navigate('/player')

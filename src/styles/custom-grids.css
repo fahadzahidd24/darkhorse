@@ -71,14 +71,13 @@
 	margin-right: auto;
 	margin-left: auto;
 	max-height: 100vh;
-	overflow-y: scroll;
+	/* overflow-y: scroll; */
 	padding-bottom: 10px;
 	-ms-overflow-style: none;
 	/* IE and Edge */
 	scrollbar-width: none;
 	/* Firefox */
 }
-
 .container-fluid::-webkit-scrollbar {
 	display: none;
   }

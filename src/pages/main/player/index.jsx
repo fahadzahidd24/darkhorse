@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../../layout/navbar'
 import { useDispatch, useSelector } from 'react-redux'
-import { setSettings } from '../../../store/slices/song-slice'
+import { setRecentlyPlayedSongs, setSettings } from '../../../store/slices/song-slice'
 import Slider from '@mui/material/Slider'
 import { HexColorPicker } from 'react-colorful'
 import ColorPicker from '../../../components/colorPicker'
+import axios from 'axios'
 
 const Player = () => {
     const { songToPlay, settings } = useSelector((state) => state.songs)
@@ -12,14 +13,44 @@ const Player = () => {
     const [currentLine, setCurrentLine] = useState(0);
     const [value, setValue] = useState(30);
     const [fontSize, setfontSize] = useState(40);
-    const [playSpeed, setPlaySpeed] = useState(90);
+    const [playSpeed, setPlaySpeed] = useState(10);
     const dispatch = useDispatch();
     const [isPlaying, setIsPlaying] = useState(true);
-    const speed = playSpeed * 10;
-    const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
-    useEffect(() => {
-        let scrollInterval;
 
+    
+    const speed = playSpeed;
+    let emSpeed = 101 - speed;
+    if(emSpeed > 100)
+        emSpeed = 0;
+
+    console.log({speed, emSpeed})
+
+    console.log({speed})
+    const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+
+    const togglePlay = () => {
+        setIsPlaying((prevIsPlaying) => !prevIsPlaying);
+        setPlaySpeed((prevSpeed) => (prevSpeed === 0 ? 20 : 0)); // Toggle play speed between 0 and 20
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'ArrowRight') {
+                togglePlay();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [togglePlay]);
+
+
+    useEffect(() => {
+        
+        let scrollInterval;
         if (isPlaying) {
             scrollInterval = setInterval(() => {
                 setCurrentLine((prevLine) => (prevLine < songToPlay.length - 1 ? prevLine + 1 : prevLine));
@@ -54,13 +85,6 @@ const Player = () => {
     const openColorPicker = () => {
         setIsColorPickerOpen(true);
     };
-
-    const startStopHandler = () => {
-        if (playSpeed > 0)
-            setPlaySpeed(0);
-        else
-            setPlaySpeed(90);
-    }
 
     return (
         <div class="main-template">
@@ -130,7 +154,7 @@ const Player = () => {
                                 <div class="control-box" style={{ backgroundColor: color }}>
                                     <strong class="txt">Controls</strong>
                                     <div class="btns-frame">
-                                        <button class="btn-play" onClick={startStopHandler}><i class={playSpeed === 0 ? "fa-solid fa-circle-play" : "fa-solid fa-circle-stop"}></i></button>
+                                        <button class="btn-play" onClick={togglePlay}><i class={playSpeed === 0 ? "fa-solid fa-circle-play" : "fa-solid fa-circle-stop"}></i></button>
                                         {/* <div class="btns">
                                             <button class="btn"><i class="fa-solid fa-angle-up" style={{ color: color }}></i></button>
                                             <button class="btn"><i class="fa-solid fa-angle-down" style={{ color: color }}></i></button>
@@ -146,7 +170,7 @@ const Player = () => {
                                 </div>
                             </div>}
                             <div class="holder">
-                                <div class="lyrics-list preLine" style={{ animation: `scrollText ${speed / 10}s linear infinite`, fontSize: fontSize }}>
+                                <div class="lyrics-list preLine" style={{ animation: `scrollText ${emSpeed}s linear infinite`, fontSize: fontSize }}>
                                     {songToPlay.map((line, index) => (
                                         // <li key={index} className={`lyrics-line${index === currentLine ? ' current-line' : (index < currentLine ? ' passed-line' : '')}`}>{line}</li>
                                         <li key={index} className={`lyrics-line`}>{line}</li>

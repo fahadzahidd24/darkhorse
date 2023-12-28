@@ -91,7 +91,7 @@ const Navbar = () => {
                             <i className="fa-solid fa-angle-down"></i>
                         </button>
                         <div className="dropdown" style={dropdown ? { display: 'block' } : { display: 'none' }}>
-                            <a href="#" className="dropdown-item">Profile</a>
+                            {/* <a href="#" className="dropdown-item">Profile</a> */}
                             <a className="dropdown-item" onClick={logoutHandler}>Logout</a>
                         </div>
                     </div>
