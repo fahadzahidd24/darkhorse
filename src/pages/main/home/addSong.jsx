@@ -12,7 +12,6 @@ import { setSongToEdit, setSongs, setSongsArray } from '../../../store/slices/so
 const AddSong = () => {
     const navigate = useNavigate();
     let { songToEdit, songs } = useSelector((state) => state.songs)
-    console.log(songToEdit);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const [iformData, setFormData] = useState({
@@ -50,7 +49,6 @@ const AddSong = () => {
                 album: iformData.album,
                 lyrics: iformData.lyrics
             }
-            console.log(formData);
             setLoading(true);
             try {
                 if (songToEdit.id) {

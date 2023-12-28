@@ -1,14 +1,15 @@
 import React from 'react'
 import Navbar from '../../../layout/navbar'
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import Loader from '../../../components/loader';
 import ErrorModal from '../../../components/errorModal';
 import axios from 'axios';
-import { setSetlists } from '../../../store/slices/setlist-slice';
+import { setSetlistToEdit, setSetlists, setSetlistsArray } from '../../../store/slices/setlist-slice';
 
 const AddSetlist = () => {
+    let { setListToEdit, setlists } = useSelector((state) => state.setlist)
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
@@ -16,10 +17,20 @@ const AddSetlist = () => {
         errorMessage: '',
         isError: false
     });
+    const [iformData, setFormData] = useState({
+        title: setListToEdit ? setListToEdit.title : '',
+    });
+
+    const changeHandler = (e) => {
+        setFormData({
+            ...iformData,
+            [e.target.name]: e.target.value
+        })
+    }
 
     const addSetListHandler = async (e) => {
         e.preventDefault();
-        if (e.target.title.value === '') {
+        if (iformData.title === '') {
             setError({
                 errorMessage: 'Please Give Setlist Name',
                 isError: true
@@ -27,14 +38,28 @@ const AddSetlist = () => {
         }
         else {
             const formData = {
-                title: e.target.title.value,
+                title: iformData.title,
             }
             setLoading(true);
             try {
-                const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/playlist-create`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-                console.log(response.data);
-                dispatch(setSetlists(response.data.data));
-                navigate('/setlist')
+                if (setListToEdit.id) {
+                    formData.id = setListToEdit.id;
+                    const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/playlist-update`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+                    setlists = setlists.map((setlist) => {
+                        return {
+                            ...setlist,
+                            title: setlist.id === setListToEdit.id ? response.data.data.title : setlist.title,
+                        }
+                    })
+                    dispatch(setSetlistsArray(setlists))
+                    // songs[songs.findIndex(song => song.id === songToEdit.id)] = response.data.data;
+                    dispatch(setSetlistToEdit({}));
+                    navigate('/setlist')
+                } else {
+                    const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/playlist-create`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+                    dispatch(setSetlists(response.data.data));
+                    navigate('/setlist')
+                }
             } catch (error) {
                 setError({
                     errorMessage: error?.response?.data?.message,
@@ -63,15 +88,15 @@ const AddSetlist = () => {
                     <main id="main">
                         <div class="container-fluid">
                             <div class="form-container">
-                                <h1 class="text-center">ADD NEW SETLIST</h1>
+                                <h1 class="text-center">{setListToEdit.id ? "EDIT SETLIST" : "ADD NEW SETLIST"}</h1>
                                 {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
                                 <form onSubmit={addSetListHandler} class="lyrics-form">
                                     <div class="row">
                                         <div class="form-group column-12">
-                                            <input type="text" name="title" id="title" class="form-control" placeholder="Add Setlist Name" />
+                                            <input type="text" name="title" id="title" onChange={changeHandler} class="form-control" placeholder="Add Setlist Name" value={iformData.title} />
                                         </div>
                                         <div class="column-12 d-flex justify-content-center">
-                                            <button type="submit" class="btn">Add</button>
+                                            <button type="submit" class="btn">{setListToEdit.id ? "Update" : "ADD"}</button>
                                         </div>
                                     </div>
                                 </form>

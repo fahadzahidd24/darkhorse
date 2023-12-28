@@ -70,9 +70,6 @@ const Navbar = () => {
         setdropdown(!dropdown);
     }
 
-    const settingsHandler = () => {
-        dispatch(setSettings(true));
-    }
 
     return (
         <>
@@ -95,7 +92,6 @@ const Navbar = () => {
                         </button>
                         <div className="dropdown" style={dropdown ? { display: 'block' } : { display: 'none' }}>
                             <a href="#" className="dropdown-item">Profile</a>
-                            <a onClick={settingsHandler} className="dropdown-item">Settings</a>
                             <a className="dropdown-item" onClick={logoutHandler}>Logout</a>
                         </div>
                     </div>

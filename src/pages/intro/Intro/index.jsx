@@ -6,7 +6,6 @@ import '../../../styles/custom-grids.css'
 const Intro = () => {
     const navigate = useNavigate()
     const token = useSelector((state) => state.auth.token);
-    console.log("token here ==>", token);
 
     const welcomeHandler = () => {
         navigate('/welcome')

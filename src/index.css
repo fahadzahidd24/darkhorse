@@ -33,7 +33,13 @@ html {
   /* 2 */
   -webkit-text-size-adjust: 100%;
   min-height: 100vh;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
   /* 2 */
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 /**

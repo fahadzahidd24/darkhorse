@@ -31,9 +31,7 @@ const Login = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            console.log(process.env.REACT_APP_BASE_URL);
             const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/login`, loginForm);
-            console.log(response.data);
             localStorage.setItem('token', response.data.data.api_token);
             localStorage.setItem('user', JSON.stringify({name: response.data.data.name, email: response.data.data.email}));
             dispatch(setToken(response.data.data.api_token));

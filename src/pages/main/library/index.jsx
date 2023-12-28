@@ -9,16 +9,17 @@ import Loader from '../../../components/loader';
 import { setSongToEdit, setSongToPlay, setSongs, setSongsArray } from '../../../store/slices/song-slice';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModel from '../../../components/confirmationModel';
+import SetlistModal from '../../../components/setlistModal';
 
 const Library = () => {
   const { songs } = useSelector((state) => state.songs);
-  console.log(songs);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [selectedSong, setSelectedSong] = useState();
   const [songToDelete, setSongToDelete] = useState();
+  const [songToSetlist, setSongToSetlist] = useState();
   const [error, setError] = useState({
     errorMessage: '',
     isError: false
@@ -98,20 +99,27 @@ const Library = () => {
   }
 
   const deleteSongHandler = (song) => {
-    console.log(song);
     setSongToDelete(song);
     setConfirm(true);
   }
 
-  const editSongHandler =(song) => {
-    console.log(song);
+  const editSongHandler = (song) => {
     dispatch(setSongToEdit(song));
     navigate('/add-song');
+  }
+
+  const addToSetlistHandler = (song) => {
+    setSongToSetlist(song);
+  }
+
+  const closeSetlistModalHandler = () => {
+    setSongToSetlist(null);
   }
 
   return (
     <>
       {loading && <Loader />}
+      {songToSetlist && <SetlistModal song={songToSetlist} onClose={closeSetlistModalHandler} />}
       {confirm && <ConfirmationModel onPressYes={pressYesHandler} onPressNo={pressNoHandler} />}
       <div className="main-template">
         <div id="wrapper">
@@ -133,38 +141,31 @@ const Library = () => {
                 <div className="holder">
                   <table className="list-table">
                     {songs?.map((song, index) => (
-                      // <tr key={song.id} className='trRow' onClick={() => playSongHandler(song)}>
-                      <tr key={song.id} className='trRow'>
-                        <td>
+                      <tr key={song.id} className='trRow' >
+                        {/* // <tr key={song.id} className='trRow'> */}
+                        <td onClick={() => playSongHandler(song)}>
                           <span className="num">{index + 1}</span>
                           <i className="fa-regular fa-circle-pause"></i>
                         </td>
-                        <td>
+                        <td onClick={() => playSongHandler(song)}>
                           <div className="title-box">
                             <div className="image"><img src="/list-icon.png" alt="image" /></div>
                             <strong className="title">{song.title}</strong>
                           </div>
                         </td>
-                        <td>
+                        <td onClick={() => playSongHandler(song)}>
                           <span className="cat-title">{song.artist}</span>
-                          {console.log(song)}
                         </td>
                         <td align="right">
                           <ul className="list">
                             {/* <li>3:54</li> */}
-                            <li>
-                              <a href="#" className="fav">
-                                <i className="fa-regular fa-heart"></i>
-                                <i className="fa-solid fa-heart"></i>
-                              </a>
-                            </li>
                             <li className='linesParent' onClick={() => optionsHandler(song)}>
                               <i className="fa-solid fa-grip-lines"></i>
                               {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
                                 <ul className='ulDropdown'>
                                   <li onClick={editSongHandler.bind(null, song)}>Edit</li>
                                   <li onClick={deleteSongHandler.bind(null, song)}>Delete</li>
-                                  <li>Add to Setlist</li>
+                                  <li onClick={addToSetlistHandler.bind(null, song)}>Add to Setlist</li>
                                 </ul>
                               </div>}
                             </li>

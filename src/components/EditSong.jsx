@@ -24,13 +24,10 @@ const EditSong = ({ title = '', artist = '', album = '', generous = '', id }) =>
 
     const submitHandler = async (e) => {
         e.preventDefault();
-        console.log(formData);
         try {
             const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/song-update`, formData, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
             })
-            console.log(response.data);
-            console.log("``` updated ```");
             // dispatch(setSongs(response.data.data));
             // navigate('/library');
         } catch (error) {

@@ -16,6 +16,7 @@ import AddSong from './pages/main/home/addSong';
 import Setlist from './pages/main/setlist';
 import AddSetlist from './pages/main/setlist/addSetlist';
 import Player from './pages/main/player';
+import SetlistSongs from './pages/main/setlist/setListSongs';
 
 function App() {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ function App() {
           <Route path="/library" exact element={<Library />} />
           <Route path="/add-song" exact element={<AddSong />} />
           <Route path="/setlist" exact element={<Setlist />} />
+          <Route path="/setlistSongs" exact element={<SetlistSongs />} />
           <Route path="/add-setlist" exact element={<AddSetlist />} />
           <Route path="/player" exact element={<Player />} />
         </Route>
