@@ -49,6 +49,15 @@ html::-webkit-scrollbar {
  */
 body {
   margin: 0;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  /* 2 */
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 /* HTML5 display definitions

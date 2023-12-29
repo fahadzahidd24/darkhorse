@@ -19,7 +19,7 @@ function createWindow() {
     // mainWindow.loadFile(path.join(__dirname, 'build/index.html'));
 
 
-    mainWindow.loadURL('https://darkhorse-song.vercel.app');
+    mainWindow.loadURL('https://darkhorse-nine.vercel.app');
 
     // Open the DevTools (remove this line in production)
     // mainWindow.webContents.openDevTools();
