@@ -12,15 +12,16 @@ const Player = () => {
     const [color, setColor] = useState("#f00");
     const [currentLine, setCurrentLine] = useState(0);
     const [value, setValue] = useState(30);
+    const [speedAtStop, setSpeedAtStop] = useState();
     const [fontSize, setfontSize] = useState(40);
-    const [playSpeed, setPlaySpeed] = useState(10);
+    const [playSpeed, setPlaySpeed] = useState(4);
     const dispatch = useDispatch();
     const [isPlaying, setIsPlaying] = useState(true);
 
     
     const speed = playSpeed;
-    let emSpeed = 101 - speed;
-    if(emSpeed > 100)
+    let emSpeed = 121 - speed;
+    if(emSpeed > 120)
         emSpeed = 0;
 
     console.log({speed, emSpeed})
@@ -31,6 +32,13 @@ const Player = () => {
     const togglePlay = () => {
         setIsPlaying((prevIsPlaying) => !prevIsPlaying);
         setPlaySpeed((prevSpeed) => (prevSpeed === 0 ? 20 : 0)); // Toggle play speed between 0 and 20
+        if(playSpeed === 0){
+            setPlaySpeed(speedAtStop);
+        }
+        else{
+            setSpeedAtStop(playSpeed);
+            setPlaySpeed(0);
+        }
     };
 
     useEffect(() => {
@@ -170,7 +178,7 @@ const Player = () => {
                                 </div>
                             </div>}
                             <div class="holder">
-                                <div class="lyrics-list preLine" style={{ animation: `scrollText ${emSpeed}s linear infinite`, fontSize: fontSize }}>
+                                <div class="lyrics-list preLine" style={emSpeed > 0? { animation: `scrollText ${emSpeed}s linear infinite`, fontSize: fontSize }: {}}>
                                     {songToPlay.map((line, index) => (
                                         // <li key={index} className={`lyrics-line${index === currentLine ? ' current-line' : (index < currentLine ? ' passed-line' : '')}`}>{line}</li>
                                         <li key={index} className={`lyrics-line`}>{line}</li>
