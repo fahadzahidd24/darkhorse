@@ -33,8 +33,10 @@ html {
   /* 2 */
   -webkit-text-size-adjust: 100%;
   min-height: 100vh;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
   /* 2 */
 }
 
@@ -613,11 +615,13 @@ a {
   justify-content: center;
   font-family: "Raleway", sans-serif;
 }
-.settingsBtnDiv{
+
+.settingsBtnDiv {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
 }
+
 .btn:before {
   top: 0;
   left: 0;
@@ -786,6 +790,19 @@ textarea.form-control {
   background: url('/public/bg-button.png') no-repeat;
   background-size: cover;
   margin: 0px 20px
+}
+
+.btnConfirm2 {
+  color: #fff;
+  margin: 0;
+  padding: 7px 22px;
+  border-radius: 17px;
+  letter-spacing: 0.05em;
+  border: 2px solid #888;
+  font: 400 25px/1 "Luckiest Guy", sans-serif;
+  background: url('/public/bg-button.png') no-repeat;
+  background-size: cover;
+  margin: 0px 5px
 }
 
 #header .logo {
@@ -1086,6 +1103,16 @@ textarea.form-control {
   }
 }
 
+.pagination {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  position: static;
+}
+
 @media (min-width: 1080px) {
   .user-box i {
     font-size: 20px;
@@ -1100,7 +1127,7 @@ textarea.form-control {
   background: #fff;
   top: calc(100% + 5px);
   border-radius: 5px;
-  border:none
+  border: none
 }
 
 @media (min-width: 576px) {
@@ -2524,7 +2551,9 @@ textarea.form-control {
 }
 
 .list-container {
-  min-height: 80vh;
+  position:relative;
+  min-height: 50vh;
+  max-height: 100%;
   overflow: hidden;
   border-radius: 15px;
   padding: 0 15px 15px;
@@ -3117,11 +3146,11 @@ textarea.form-control {
   -webkit-box-flex: 0;
   -ms-flex: 0 0 auto;
   flex: 0 0 auto;
-  width:65%;
+  width: 65%;
   position: relative;
 }
 
-.stopDiv{
+.stopDiv {
   position: absolute;
   top: 0;
   left: 0;
@@ -3135,7 +3164,7 @@ textarea.form-control {
   align-items: center;
 }
 
-.stopDiv .btns-frame .btn-play{
+.stopDiv .btns-frame .btn-play {
   color: #000;
   font-size: 120px;
   background-color: transparent;
@@ -3273,7 +3302,7 @@ textarea.form-control {
   border-radius: 15px;
 }
 
-.controlsScreenFlex{
+.controlsScreenFlex {
   display: flex;
   flex-direction: row-reverse;
   justify-content: space-between;

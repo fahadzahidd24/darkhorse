@@ -56,6 +56,7 @@ const Navbar = () => {
                 }
             });
             localStorage.removeItem("token")
+            localStorage.removeItem("user")
             dispatch(setToken(''));
             dispatch(setAuth(false));
             navigate('/login')

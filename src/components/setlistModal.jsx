@@ -14,6 +14,7 @@ const SetlistModal = ({ onClose, song }) => {
     const setListModalRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const { setlists } = useSelector((state) => state.setlist);
+
     const dispatch = useDispatch();
     const [error, setError] = useState({
         errorMessage: '',
@@ -93,6 +94,7 @@ const SetlistModal = ({ onClose, song }) => {
         });
     }
 
+
     return (
         <>
             {loading && <Loader />}
@@ -100,8 +102,8 @@ const SetlistModal = ({ onClose, song }) => {
             <div className={style.popup2}>
                 <div ref={setListModalRef} className={style.popup_inner2}>
                     <p className={style.message2}>Add To Setlist</p>
-                    <p className={style.message2} style={{ fontSize: '2rem', textDecoration: 'none', color: "grey" }}>Choose Setlist</p>
-                    <ol className={style.setList_list}>
+                    {setlists.length > 0 && <p className={style.message2} style={{ fontSize: '2rem', textDecoration: 'none', color: "grey" }}>Choose Setlist</p>}
+                    {setlists.length> 0 ? <ol className={style.setList_list}>
                         {setlists.map((setlist, index) => {
                             return (
                                 <div className={style.setListTitleHover}>
@@ -110,7 +112,7 @@ const SetlistModal = ({ onClose, song }) => {
                                 </div>
                             )
                         })}
-                    </ol>
+                    </ol>: <p className={style.message2} style={{ fontSize: '2rem', textDecoration: 'none', color: "grey" }}>No Setlist Found</p>}
                     <button className='btn'>Ok</button>
                 </div>
             </div>

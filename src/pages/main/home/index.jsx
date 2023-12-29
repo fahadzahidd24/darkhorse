@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { setAuth, setToken } from '../../../store/slices/auth-slice';
 import axios from 'axios';
 import Navbar from '../../../layout/navbar';
-import { setRecentlyPlayedSongsArray, setSongToEdit, setSongToPlay, setSongsArray } from '../../../store/slices/song-slice';
+import { setLastPage, setRecentlyPlayedSongsArray, setSongToEdit, setSongToPlay, setSongsArray } from '../../../store/slices/song-slice';
 import Loader from '../../../components/loader';
 import { useLayoutEffect } from 'react';
 
@@ -30,6 +30,10 @@ const Home = () => {
                 });
                 dispatch(setRecentlyPlayedSongsArray(response.data.data));
             } catch (error) {
+                if(error?.response?.data?.message == "Error! Data not found"){
+                    setnoRecord(true);
+                    console.log('asdqw')
+                }
                 console.log(error);
             } finally {
                 setLoading(false);
@@ -45,6 +49,7 @@ const Home = () => {
                     }
                 });
                 dispatch(setSongsArray(response.data.data.data));
+                dispatch(setLastPage(response.data.data.last_page));
             } catch (error) {
                 console.log(error);
             } finally {
@@ -73,6 +78,7 @@ const Home = () => {
             dispatch(setRecentlyPlayedSongsArray([]));
             setnoRecord(true);
         } catch (error) {
+           
             console.log(error);
         } finally {
             setLoading(false);
@@ -118,7 +124,7 @@ const Home = () => {
                                         </tr>
                                     ))}
                                 </table>
-                                {(recentlyPlayedSongs.length === 0 && noRecord) && <div className="holder no-record">
+                                {(recentlyPlayedSongs.length == 0 && noRecord) && <div className="holder no-record">
                                     <strong className="not-found">No Record Found</strong>
                                 </div>}
                             </div>
