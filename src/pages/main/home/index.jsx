@@ -10,7 +10,6 @@ import { useLayoutEffect } from 'react';
 
 const Home = () => {
     const { recentlyPlayedSongs } = useSelector(state => state.songs)
-    console.log(recentlyPlayedSongs);
     const [loading, setLoading] = useState(false);
     const [noRecord, setnoRecord] = useState(false);
     const navigate = useNavigate();
@@ -30,7 +29,6 @@ const Home = () => {
             } catch (error) {
                 if(error?.response?.data?.message == "Error! Data not found"){
                     setnoRecord(true);
-                    console.log('asdqw')
                 }
                 console.log(error);
             } finally {
@@ -65,7 +63,6 @@ const Home = () => {
         navigate('/player')
     }
 
-    console.log(recentlyPlayedSongs);
 
     const clearHandler = async () => {
         setLoading(true);

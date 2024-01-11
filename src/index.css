@@ -2420,6 +2420,7 @@ textarea.form-control {
   display: block;
   width: 100%;
   height: auto;
+  opacity:0.9;
 }
 
 .splash-image-frame .duplicate {
@@ -2434,7 +2435,7 @@ textarea.form-control {
   position: absolute;
   text-transform: uppercase;
   font: 400 50px/1.5 "Inter", sans-serif;
-  opacity: 0.65;
+  /* opacity: 0.65; */
 }
 
 .imgHolder{
@@ -2451,9 +2452,9 @@ textarea.form-control {
 
 @media (min-width: 992px) {
   .splash-image-frame .duplicate {
-    left: 55px;
     bottom: -298px;
-    font-size: 150px;
+    font-size: 120px;
+    left: 44px;
   }
 }
 

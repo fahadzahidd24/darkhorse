@@ -14,17 +14,20 @@ import SongComponents from '../../../components/SongComponents';
 
 const Library = () => {
   const { songs, lastPage: lastPg } = useSelector((state) => state.songs);
-  console.log(lastPg);
   const [lastPage, setLastPage] = useState(lastPg);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
+  const [globalSearchTerm, setGlobalSearchTerm] = useState('');
   const [globalSong, setGlobalSong] = useState([])
   const [loading, setLoading] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [selectedSong, setSelectedSong] = useState();
   const [songToDelete, setSongToDelete] = useState();
   const [songToSetlist, setSongToSetlist] = useState();
+  const [globalSongsArray, setGlobalSongsArray] = useState([]);
+
   const [error, setError] = useState({
     errorMessage: '',
     isError: false
@@ -74,7 +77,6 @@ const Library = () => {
             }
           }
         );
-        console.log(response.data)
         setLastPage(response.data.data.last_page)
         setIncrement(1)
         setGlobalSong(response.data.data.data)
@@ -95,6 +97,40 @@ const Library = () => {
     }, 300)
     return () => clearTimeout(debouncing);
   }, [searchTerm, Increment]);
+
+  useEffect(() => {
+    const SearchGlobalSongs = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_BASE_URL}/genius-search/?term=${globalSearchTerm}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+          }
+        );
+        console.log(response.data)
+        // setLastPage(response.data.data.last_page)
+        // setIncrement(1)
+        // setGlobalSong(response.data.data.data)
+        // setLoading(false);
+
+      } catch (error) {
+        console.log(error.message)
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // debouncing 
+    const debouncing = setTimeout(() => {
+      if (globalSearchTerm !== '') {
+        SearchGlobalSongs();
+      }
+    }, 1000)
+    return () => clearTimeout(debouncing);
+  }, [globalSearchTerm]);
 
   const fetchSongs = async (page) => {
     setLoading(true);
@@ -126,7 +162,6 @@ const Library = () => {
   };
 
   const handlePrevClick = () => {
-    console.log("prev", songs)
     const nextPage = Increment - 1;
     setIncrement(nextPage);
   };
@@ -213,8 +248,15 @@ const Library = () => {
     navigate('/add-song')
   }
 
-  console.log({ Increment });
-  console.log({ lastPage });
+  const globalSearchHandler = () => {
+    if (globalSearch) {
+      setGlobalSearch(false);
+      setSearchTerm('');
+    } else {
+      setGlobalSearch(true);
+    }
+  }
+
   return (
     <>
       {loading && <Loader />}
@@ -227,9 +269,9 @@ const Library = () => {
             <div className="container-fluid">
               <div className="list-container">
                 <div className="container-head">
-                  <h1>Library</h1>
+                  <h1>{globalSearch? "Search Songs": "Library"}</h1>
                   {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
-                  <form className="track-search">
+                  {!globalSearch && <form className="track-search">
                     <div className="form-group">
                       <i className="fa-solid fa-magnifying-glass"></i>
                       <input
@@ -240,51 +282,35 @@ const Library = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
-                  </form>
-                  <button type="button" className="add-btn" onClick={addSongHandler}>
-                    {/* <span className="txt">ADD NEW SONG</span> */}
-                    <i className="fa-solid fa-plus mgRemove"></i>
-                  </button>
+                  </form>}
+                  <div className='d-flex'>
+                    {globalSearch && <form className="track-search" style={{ marginRight: 10 }}>
+                      <div className="form-group">
+                        <i className="fa-solid fa-magnifying-glass"></i>
+                        <input
+                          style={{ width: 340 }}
+                          type="search"
+                          className="form-field"
+                          placeholder="Search songs globally..."
+                          value={globalSearchTerm}
+                          onChange={(e) => setGlobalSearchTerm(e.target.value)}
+                        />
+                      </div>
+                    </form>}
+                    <button type="button" className="add-btn" onClick={globalSearchHandler} style={{ marginRight: 4 }}>
+                      {/* <span className="txt">ADD NEW SONG</span> */}
+                      <i className={globalSearch? "fa-solid fa-remove mgRemove" : "fa-solid fa-search mgRemove"}></i>
+                    </button>
+                    <button type="button" className="add-btn" onClick={addSongHandler}>
+                      {/* <span className="txt">ADD NEW SONG</span> */}
+                      <i className="fa-solid fa-plus mgRemove"></i>
+                    </button>
+                  </div>
                 </div>
                 <div className="holder">
                   <table className="list-table">
-
-                    {/* yeh mera */}
-                    {/* {songs?.map((song, index) => (
-                      <tr key={song.id} className='trRow' >
-                        <td onClick={() => playSongHandler(song)}>
-                          <span className="num">{index + 1}</span>
-                          <i className="fa-regular fa-circle-pause"></i>
-                        </td>
-                        <td onClick={() => playSongHandler(song)}>
-                          <div className="title-box">
-                            <div className="image"><img src="/list-icon.png" alt="image" /></div>
-                            <strong className="title">{song.title}</strong>
-                          </div>
-                        </td>
-                        <td onClick={() => playSongHandler(song)}>
-                          <span className="cat-title">{song.artist}</span>
-                        </td>
-                        <td align="right">
-                          <ul className="list">
-                            <li className='linesParent' onClick={() => optionsHandler(song)}>
-                              <i className="fa-solid fa-grip-lines"></i>
-                              {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
-                                <ul className='ulDropdown'>
-                                  <li onClick={editSongHandler.bind(null, song)}>Edit</li>
-                                  <li onClick={deleteSongHandler.bind(null, song)}>Delete</li>
-                                  <li onClick={addToSetlistHandler.bind(null, song)}>Add to Setlist</li>
-                                </ul>
-                              </div>}
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                    ))} */}
-                    {/* yeh mera */}
-
                     {
-                      filteredSongs.length > 0 ? (
+                      (filteredSongs.length > 0 && !globalSearch) ? (
                         filteredSongs
                           .slice((Increment - 1) * 10, Increment * 10)
                           .map((song, index) => (
@@ -320,63 +346,7 @@ const Library = () => {
                         <strong className="not-found">No Record Found</strong>
                       </div>
                     }
-
-
-
-                    {/* <tr className="pause">
-                    <td>
-                    <span className="num">2</span>
-                    <i className="fa-regular fa-circle-pause"></i>
-                    </td>
-                    <td>
-                      <div className="title-box">
-                        <div className="image"><img src="/img1.jpg" alt="image" /></div>
-                        <strong className="title">All I Want For Christmas Is You</strong>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="cat-title">Maria Carey</span>
-                    </td>
-                    <td align="right">
-                      <ul className="list">
-                        <li>3:54</li>
-                        <li>
-                          <a href="#" className="fav">
-                            <i className="fa-regular fa-heart"></i>
-                            <i className="fa-solid fa-heart"></i>
-                            </a>
-                        </li>
-                        <li><i className="fa-solid fa-grip-lines"></i></li>
-                      </ul>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <span className="num">3</span>
-                      <i className="fa-regular fa-circle-pause"></i>
-                    </td>
-                    <td>
-                      <div className="title-box">
-                        <div className="image"><img src="/img1.jpg" alt="image" /></div>
-                        <strong className="title">All I Want For Christmas Is You</strong>
-                      </div>
-                    </td>
-                    <td>
-                      <span className="cat-title">Maria Carey</span>
-                    </td>
-                    <td align="right">
-                      <ul className="list">
-                        <li>3:54</li>
-                        <li>
-                          <a href="#" className="fav">
-                            <i className="fa-regular fa-heart"></i>
-                            <i className="fa-solid fa-heart"></i>
-                            </a>
-                            </li>
-                            <li><i className="fa-solid fa-grip-lines"></i></li>
-                            </ul>
-                            </td>
-                          </tr> */}
+                    
                   </table>
                   {songs.length > 0 && <div className="pagination">
                     {Increment !== 1 && <button onClick={() => handlePrevClick()} className='btnConfirm2'>

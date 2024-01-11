@@ -17,7 +17,6 @@ import Setlist from './pages/main/setlist';
 import AddSetlist from './pages/main/setlist/addSetlist';
 import Player from './pages/main/player';
 import SetlistSongs from './pages/main/setlist/setListSongs';
-import GlobalSearch from './pages/main/GlobalSearch';
 
 function App() {
   const dispatch = useDispatch();
@@ -49,7 +48,6 @@ function App() {
           <Route path="/setlistSongs" exact element={<SetlistSongs />} />
           <Route path="/add-setlist" exact element={<AddSetlist />} />
           <Route path="/player" exact element={<Player />} />
-          <Route path="/globalSearch" exact element={<GlobalSearch />} />
         </Route>
       </Routes>
     </BrowserRouter >

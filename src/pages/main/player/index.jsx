@@ -54,7 +54,6 @@ const Player = () => {
         };
     }, [togglePlay]);
 
-    console.log(currentLine);
 
 
     useEffect(() => {
