@@ -2152,7 +2152,9 @@ textarea.form-control {
 .splash-image-frame .holder {
   overflow: hidden;
   border-radius: 10px;
+  height: auto;
   padding: 13px 3px 22px 6px;
+  padding: 0;
   background: -webkit-gradient(linear, left top, left bottom, from(#000), to(#C4161E));
   background: linear-gradient(180deg, #000 0%, #C4161E 100%);
 }
@@ -2161,6 +2163,7 @@ textarea.form-control {
 
   .intro-box .holder,
   .splash-image-frame .holder {
+    height: auto;
     padding: 13px 10px 40px 10px;
   }
 }
@@ -2169,6 +2172,7 @@ textarea.form-control {
 
   .intro-box .holder,
   .splash-image-frame .holder {
+    height: auto;
     border-radius: 25px;
     padding: 38px 10px 62px 17px;
   }
@@ -2178,6 +2182,7 @@ textarea.form-control {
 
   .intro-box .holder,
   .splash-image-frame .holder {
+    height: auto;
     padding: 42px 40px 70px 43px;
   }
 }
@@ -2373,6 +2378,7 @@ textarea.form-control {
 }
 
 .splash-image-frame .holder {
+  height: auto;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -2391,6 +2397,7 @@ textarea.form-control {
 
 @media (min-width: 992px) {
   .splash-image-frame .holder {
+    height: auto;
     height: 696px;
     padding: 50px 64px 50px 0;
   }
@@ -2398,12 +2405,13 @@ textarea.form-control {
 
 @media (min-width: 1080px) and (orientation: landscape) {
   .splash-image-frame .holder {
-    height: 431px;
+    height: auto;
+    /* height: 431px; */
   }
 }
 
 .splash-image-frame .image {
-  width: 70%;
+  /* width: 70%; */
   overflow: hidden;
   max-width: 453px;
 }
@@ -2426,6 +2434,11 @@ textarea.form-control {
   position: absolute;
   text-transform: uppercase;
   font: 400 50px/1.5 "Inter", sans-serif;
+  opacity: 0.65;
+}
+
+.imgHolder{
+  padding: 0 !important;
 }
 
 @media (min-width: 576px) {
