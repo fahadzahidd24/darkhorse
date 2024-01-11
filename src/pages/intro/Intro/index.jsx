@@ -20,7 +20,7 @@ const Intro = () => {
                                 <div className="holder">
                                     <strong className="logo"><a href="index.html"><img src="/logo.svg" alt="StagePro" /></a></strong>
                                     <div className="text-box">
-                                        <p>Unleash your creativity, organize your events effortlessly, and captivate your audience like never before. Stage Pro is here to empower your performances and make every moment on stage truly memorable.</p>
+                                        <p>Unleash your creativity, organize your track lists and set lists effortlessly, boost your confidence by never forgetting the lyrics again. StagePro Canada is here to empower your performances and help to make every moment on stage truly memorable</p>
                                         <a className="btn" onClick={welcomeHandler}>LET’S START</a>
                                     </div>
                                 </div>
@@ -28,7 +28,7 @@ const Intro = () => {
                             <div className="splash-image-frame">
                                 <div className="holder">
                                     <div className="duplicate" title="STAGEPRO">STAGEPRO</div>
-                                    <div className="image"><img src="/image1.png" alt="image" /></div>
+                                    <div className="image"><img src="/rockConcert.jpeg" alt="image" /></div>
                                 </div>
                             </div>
                         </div>

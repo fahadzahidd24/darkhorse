@@ -22,8 +22,8 @@ const Welcome = () => {
                     <div className="box welcom-box">
                         <div className="text-box">
                             <div className="box-head">
-                                <h1><img className="icon" src="/mic-icon.svg" alt="icon" />WEL COME!</h1>
-                                <p className="lead">“STAGEPRO, your ultimate singing companion!"</p>
+                                <h1>WELCOME!</h1>
+                                <p className="lead">“STAGEPRO, Your Ultimate Musicians Stage Prompter and Work Station"</p>
                             </div>
                             <ul className="list">
                                 <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Lyrics Stage Prompter</a></li>
@@ -33,10 +33,10 @@ const Welcome = () => {
                                 <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Customizable Lyrics Display</a></li>
                                 <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Scroll and Change Pages</a></li>
                             </ul>
-                            <p className="txt">“The Ultimate Stage Prompter and Musicians Workstation”</p>
+                            {/* <p className="txt">“The Ultimate Stage Prompter and Musicians Workstation”</p> */}
                             <div className="btns">
                                 {/* <button type="button" className="btn">sign up</button> */}
-                                <button type="button" className="btn" onClick={loginHandler}>sign in</button>
+                                <button type="button" className="btn" onClick={loginHandler}>Sign In</button>
                             </div>
                         </div>
                     </div>

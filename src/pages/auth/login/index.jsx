@@ -80,11 +80,11 @@ const Login = () => {
                                     <img className="icon lock" src="/lock-icon.svg" alt="lock" />
                                     <input type="password" className="form-control" placeholder="password" value={loginForm.password} onChange={changeHandler.bind(null, "password")} />
                                 </div>
-                                <div className="form-group d-flex content-justify-end">
+                                {/* <div className="form-group d-flex content-justify-end">
                                     <a href="#" className="link">Forget Password?</a>
-                                </div>
+                                </div> */}
                                 <div className="form-group d-flex content-justify-center margin-0">
-                                    <input type="submit" value="sign in" className="btn" />
+                                    <input type="submit" value="Sign In" className="btn" />
                                 </div>
                             </form>
                         </div>

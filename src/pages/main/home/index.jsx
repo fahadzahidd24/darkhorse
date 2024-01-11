@@ -15,9 +15,7 @@ const Home = () => {
     const [noRecord, setnoRecord] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const addSongHandler = () => {
-        navigate('/add-song')
-    }
+    
 
     useLayoutEffect(() => {
         const fetchRecentlyPlayedSongs = async () => {
@@ -67,6 +65,8 @@ const Home = () => {
         navigate('/player')
     }
 
+    console.log(recentlyPlayedSongs);
+
     const clearHandler = async () => {
         setLoading(true);
         try {
@@ -78,7 +78,6 @@ const Home = () => {
             dispatch(setRecentlyPlayedSongsArray([]));
             setnoRecord(true);
         } catch (error) {
-           
             console.log(error);
         } finally {
             setLoading(false);
@@ -96,14 +95,14 @@ const Home = () => {
                             <div className="list-container">
                                 <div className="container-head">
                                     <h1>Recently Played</h1>
-                                    <button type="button" className="add-btn" onClick={addSongHandler}>
+                                    {/* <button type="button" className="add-btn" onClick={addSongHandler}>
                                         <span className="txt">ADD NEW SONG</span>
                                         <i className="fa-solid fa-plus"></i>
-                                    </button>
-                                </div>
+                                    </button> */}
                                 {recentlyPlayedSongs.length> 0 && <div className="clearAll d-flex justify-content-end mt-3">
                                     <button className='btnConfirm text-sm' onClick={clearHandler}>Clear All</button>
                                 </div>}
+                                </div>
                                 <table className="list-table">
                                     {recentlyPlayedSongs?.map((song, index) => (
                                         <tr key={song.id} className='trRow' >

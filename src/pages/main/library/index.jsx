@@ -13,7 +13,7 @@ import SetlistModal from '../../../components/setlistModal';
 import SongComponents from '../../../components/SongComponents';
 
 const Library = () => {
-  const { songs, lastPage:lastPg } = useSelector((state) => state.songs);
+  const { songs, lastPage: lastPg } = useSelector((state) => state.songs);
   console.log(lastPg);
   const [lastPage, setLastPage] = useState(lastPg);
   const navigate = useNavigate();
@@ -209,6 +209,10 @@ const Library = () => {
     setSongToSetlist(null);
   }
 
+  const addSongHandler = () => {
+    navigate('/add-song')
+  }
+
   console.log({ Increment });
   console.log({ lastPage });
   return (
@@ -237,6 +241,10 @@ const Library = () => {
                       />
                     </div>
                   </form>
+                  <button type="button" className="add-btn" onClick={addSongHandler}>
+                    {/* <span className="txt">ADD NEW SONG</span> */}
+                    <i className="fa-solid fa-plus mgRemove"></i>
+                  </button>
                 </div>
                 <div className="holder">
                   <table className="list-table">

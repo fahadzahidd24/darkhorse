@@ -71,6 +71,10 @@ const Navbar = () => {
         setdropdown(!dropdown);
     }
 
+    const globalSearchHandler = () =>{
+        navigate('/globalSearch')
+    }
+
 
     return (
         <>
@@ -81,7 +85,7 @@ const Navbar = () => {
                     <ul className="navigation">
                         {/* <li className={active.home===true && 'active'}><a onClick={() => clickHandler('home')}>Uploads</a></li> */}
                         {/* <li className={active.library===true && 'active'}><a onClick={() => clickHandler('library')}>My Library</a></li> */}
-                        <li><a className='active' onClick={() => clickHandler('home')}>Uploads</a></li>
+                        <li><a className='active' onClick={() => clickHandler('home')}>Home</a></li>
                         <li><a className='active' onClick={() => clickHandler('library')}>My Library</a></li>
                         <li><a className='active' onClick={() => clickHandler('setlist')}>Set Lists</a></li>
                     </ul>
@@ -92,7 +96,7 @@ const Navbar = () => {
                             <i className="fa-solid fa-angle-down"></i>
                         </button>
                         <div className="dropdown" style={dropdown ? { display: 'block' } : { display: 'none' }}>
-                            {/* <a href="#" className="dropdown-item">Profile</a> */}
+                            <a className="dropdown-item" onClick={globalSearchHandler}>Global Search</a>
                             <a className="dropdown-item" onClick={logoutHandler}>Logout</a>
                         </div>
                     </div>
