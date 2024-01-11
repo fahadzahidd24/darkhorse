@@ -2398,7 +2398,7 @@ textarea.form-control {
 @media (min-width: 992px) {
   .splash-image-frame .holder {
     height: auto;
-    height: 696px;
+    /* height: 696px; */
     padding: 50px 64px 50px 0;
   }
 }
@@ -2413,7 +2413,7 @@ textarea.form-control {
 .splash-image-frame .image {
   /* width: 70%; */
   overflow: hidden;
-  max-width: 453px;
+  /* max-width: 453px; */
 }
 
 .splash-image-frame .image img {
