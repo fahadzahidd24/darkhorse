@@ -35,7 +35,7 @@ const AddSong = () => {
 
     const addSongHandler = async (e) => {
         e.preventDefault();
-        if (!iformData.title || !iformData.artist|| !iformData.genre || !iformData.lyrics) {
+        if (!iformData.title || !iformData.artist || !iformData.lyrics) {
             setError({
                 errorMessage: 'Please fill all the required fields',
                 isError: true
@@ -45,7 +45,7 @@ const AddSong = () => {
             const formData = {
                 title: iformData.title,
                 artist: iformData.artist,
-                genre: iformData.genre,
+                genre: iformData.genre || 'Rock',
                 album: iformData.album,
                 lyrics: iformData.lyrics
             }
