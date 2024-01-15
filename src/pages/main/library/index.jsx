@@ -330,7 +330,7 @@ const Library = () => {
                 <div className="container-head">
                   <h1>{globalSearch ? "Search Songs" : "Library"}</h1>
                   {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
-                  {!globalSearch && <form className="track-search">
+                  {!globalSearch && <form onSubmit={(e)=> e.preventDefault()} className="track-search">
                     <div className="form-group">
                       <i className="fa-solid fa-magnifying-glass"></i>
                       <input
@@ -343,7 +343,7 @@ const Library = () => {
                     </div>
                   </form>}
                   <div className='d-flex'>
-                    {globalSearch && <form className="track-search" style={{ marginRight: 10 }}>
+                    {globalSearch && <form className="track-search" onSubmit={(e)=> e.preventDefault()} style={{ marginRight: 10 }}>
                       <div className="form-group">
                         <i className="fa-solid fa-magnifying-glass"></i>
                         <input
