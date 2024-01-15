@@ -2784,6 +2784,7 @@ textarea.form-control {
 .libraryListScroll{
   overflow: scroll;
   max-height: 42vh;
+  min-height: 42vh;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
