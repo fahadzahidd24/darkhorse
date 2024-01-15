@@ -47,6 +47,23 @@ const SetlistSongs = () => {
         navigate('/add-song');
     }
 
+    const deleteSongHandler = async (song) => {
+        setLoading(true);
+        try {
+            await axios.get(`${process.env.REACT_APP_BASE_URL}/playlists/${setListToGet.id}/songs/${song.id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            setItems(items.filter(item => item.id !== song.id));
+            dispatch(setSetListSongs(setListSongs.filter(item => item.id !== song.id)));
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     useLayoutEffect(() => {
         const fetchSongs = async () => {
             setLoading(true);
@@ -114,57 +131,57 @@ const SetlistSongs = () => {
                                 <div class="container-head">
                                     <h1>{setListToGet.title}</h1>
                                     {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
-                                    
+
                                 </div>
                                 <div class="holder libraryListScroll">
                                     <table className="list-table">
                                         {/* <Reorder.Group axis="y" onReorder={setItems} values={items}> */}
-                                            {/* {console.log("ssss",setListSongs)} */}
-                                            {/* {items.map((item, index) => (
+                                        {/* {console.log("ssss",setListSongs)} */}
+                                        {/* {items.map((item, index) => (
                                                 <Item key={index} item={item} />
                                             ))} */}
 
-                                            {setListSongs?.map((song, index) => (
+                                        {setListSongs?.map((song, index) => (
                                             // {items?.map((song, index) => (
-                                                // <Reorder.Item
-                                                //     key={song.id}
-                                                //     value={song}
-                                                //     id={song.id}
-                                                //     style={{ width: '100%' }}
-                                                //     dragListener={true}
-                                                //     dragControls={dragControls}
-                                                // >
-                                                    <tr className='trRow' >
-                                                        <td onClick={() => playSongHandler(song)}>
-                                                            <span className="num">{index + 1}</span>
-                                                            <i className="fa-regular fa-circle-pause"></i>
-                                                        </td>
-                                                        <td onClick={() => playSongHandler(song)}>
-                                                            <div className="title-box">
-                                                                <div className="image"><img src="/list-icon.png" alt="image" /></div>
-                                                                <strong className="title">{song.title}</strong>
-                                                            </div>
-                                                        </td>
-                                                        <td onClick={() => playSongHandler(song)}>
-                                                            <span className="cat-title">{song.artist}</span>
-                                                        </td>
-                                                        <td align="right">
-                                                            <ul className="list">
-                                                                <li className='linesParent' onClick={() => optionsHandler(song)}>
-                                                                    {/* <i className="fa-solid fa-grip-lines"></i> */}
-                                                                    <ReorderIcon dragControls={dragControls} />
-                                                                    {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
-                                                                        <ul className='ulDropdown'>
-                                                                            <li onClick={editSongHandler.bind(null, song)}>Edit</li>
-                                                                            <li>Delete</li>
-                                                                        </ul>
-                                                                    </div>}
-                                                                </li>
-                                                            </ul>
-                                                        </td>
-                                                    </tr>
-                                                // </Reorder.Item>
-                                            ))}
+                                            // <Reorder.Item
+                                            //     key={song.id}
+                                            //     value={song}
+                                            //     id={song.id}
+                                            //     style={{ width: '100%' }}
+                                            //     dragListener={true}
+                                            //     dragControls={dragControls}
+                                            // >
+                                            <tr className='trRow' >
+                                                <td onClick={() => playSongHandler(song)}>
+                                                    <span className="num">{index + 1}</span>
+                                                    <i className="fa-regular fa-circle-pause"></i>
+                                                </td>
+                                                <td onClick={() => playSongHandler(song)}>
+                                                    <div className="title-box">
+                                                        <div className="image"><img src="/list-icon.png" alt="image" /></div>
+                                                        <strong className="title">{song.title}</strong>
+                                                    </div>
+                                                </td>
+                                                <td onClick={() => playSongHandler(song)}>
+                                                    <span className="cat-title">{song.artist}</span>
+                                                </td>
+                                                <td align="right">
+                                                    <ul className="list">
+                                                        <li className='linesParent' onClick={() => optionsHandler(song)}>
+                                                            {/* <i className="fa-solid fa-grip-lines"></i> */}
+                                                            <ReorderIcon dragControls={dragControls} />
+                                                            {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
+                                                                <ul className='ulDropdown'>
+                                                                    <li onClick={editSongHandler.bind(null, song)}>Edit</li>
+                                                                    <li onClick={deleteSongHandler.bind(null, song)}>Delete</li>
+                                                                </ul>
+                                                            </div>}
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            // </Reorder.Item>
+                                        ))}
                                         {/* </Reorder.Group> */}
                                     </table>
                                 </div>
