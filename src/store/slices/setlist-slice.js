@@ -4,6 +4,7 @@ const initialState = {
     setlists: [],
     setListToGet: {},
     setListSongs: [],
+    setlistSongToPlayId: '',
     setListToEdit: {},
 }
 
@@ -23,11 +24,14 @@ const setlistSlice = createSlice({
         setSetListSongs: (state, action) => {
             state.setListSongs = action.payload;
         },
+        setSetListSongToPlayId: (state, action) => {
+            state.setlistSongToPlayId = action.payload;
+        },
         setSetlistToEdit: (state, action) => {
             state.setListToEdit = action.payload;
         },
     },
 });
 
-export const { setSetlists, setSetlistsArray, setSetlistToGet, setSetListSongs, setSetlistToEdit } = setlistSlice.actions;
+export const { setSetlists, setSetlistsArray, setSetlistToGet, setSetListSongs, setSetListSongToPlayId, setSetlistToEdit } = setlistSlice.actions;
 export default setlistSlice.reducer;

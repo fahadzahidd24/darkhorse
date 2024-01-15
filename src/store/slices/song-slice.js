@@ -5,6 +5,7 @@ const initialState = {
     songs: [],
     recentlyPlayedSongs: [],
     songToPlay: [],
+    songToPlayId: '',
     songToEdit: {},
     settings: false,
     lastPage: '',
@@ -22,6 +23,9 @@ const songsSlice = createSlice({
         },
         setSongToPlay: (state, action) => {
             state.songToPlay = action.payload;
+        },
+        setSongToPlayId: (state, action) => {
+            state.songToPlayId = action.payload;
         },
         setSettings: (state, action) => {
             state.settings = action.payload;
@@ -41,5 +45,5 @@ const songsSlice = createSlice({
     },
 });
 
-export const { setSongs, setSongsArray, setSongToPlay, setSettings, setSongToEdit, setRecentlyPlayedSongs, setRecentlyPlayedSongsArray, setLastPage } = songsSlice.actions;
+export const { setSongs, setSongsArray, setSongToPlay, setSongToPlayId, setSettings, setSongToEdit, setRecentlyPlayedSongs, setRecentlyPlayedSongsArray, setLastPage } = songsSlice.actions;
 export default songsSlice.reducer;

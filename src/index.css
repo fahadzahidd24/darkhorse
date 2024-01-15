@@ -2776,7 +2776,20 @@ textarea.form-control {
 }
 
 .list-container .holder {
-  /* overflow: hidden; */
+  /* overflow: scroll;
+  max-height: 42vh; */
+}
+
+
+.libraryListScroll{
+  overflow: scroll;
+  max-height: 42vh;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.libraryListScroll::-webkit-scrollbar {
+  display: none;
 }
 
 .list-container .holder.no-record {
@@ -3430,7 +3443,7 @@ textarea.form-control {
 
 @media (min-width: 992px) {
   #main .controls-holder .txt {
-    font-size: 15px;
+    font-size: 13px;
   }
 }
 

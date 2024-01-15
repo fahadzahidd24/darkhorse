@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { setAuth, setToken } from '../../../store/slices/auth-slice';
 import axios from 'axios';
 import Navbar from '../../../layout/navbar';
-import { setLastPage, setRecentlyPlayedSongsArray, setSongToEdit, setSongToPlay, setSongsArray } from '../../../store/slices/song-slice';
+import { setLastPage, setRecentlyPlayedSongsArray, setSongToEdit, setSongToPlay, setSongToPlayId, setSongsArray } from '../../../store/slices/song-slice';
 import Loader from '../../../components/loader';
 import { useLayoutEffect } from 'react';
 
@@ -60,6 +60,7 @@ const Home = () => {
     const playSongHandler = (song) => {
         const songLyrics = song.lyrics.split('\n');
         dispatch(setSongToPlay(songLyrics))
+        dispatch(setSongToPlayId(song.id))
         navigate('/player')
     }
 

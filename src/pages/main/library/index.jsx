@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLayoutEffect } from 'react';
 import ErrorModal from '../../../components/errorModal';
 import Loader from '../../../components/loader';
-import { setRecentlyPlayedSongs, setSongToEdit, setSongToPlay, setSongs, setSongsArray } from '../../../store/slices/song-slice';
+import { setRecentlyPlayedSongs, setSongToEdit, setSongToPlay, setSongToPlayId, setSongs, setSongsArray } from '../../../store/slices/song-slice';
 import { useNavigate } from 'react-router-dom';
 import ConfirmationModel from '../../../components/confirmationModel';
 import SetlistModal from '../../../components/setlistModal';
@@ -98,24 +98,22 @@ const Library = () => {
     return () => clearTimeout(debouncing);
   }, [searchTerm, Increment]);
 
+  console.log(globalSongsArray)
+
   useEffect(() => {
     const SearchGlobalSongs = async () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_BASE_URL}/genius-search/?term=${globalSearchTerm}`,
+          `${process.env.REACT_APP_BASE_URL}/genius-search?term=${globalSearchTerm}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`
             }
           }
         );
-        console.log(response.data)
-        // setLastPage(response.data.data.last_page)
-        // setIncrement(1)
-        // setGlobalSong(response.data.data.data)
-        // setLoading(false);
-
+        console.log("sss", response.data.data);
+        setGlobalSongsArray(response.data.data)
       } catch (error) {
         console.log(error.message)
       } finally {
@@ -154,17 +152,6 @@ const Library = () => {
     }
   }
 
-  const handleNextClick = () => {
-    if (Increment === lastPage) return;
-    const nextPage = Increment + 1;
-    setIncrement(nextPage);
-    fetchSongs(nextPage);
-  };
-
-  const handlePrevClick = () => {
-    const nextPage = Increment - 1;
-    setIncrement(nextPage);
-  };
 
   const handlerOkPress = () => {
     setError({
@@ -175,21 +162,35 @@ const Library = () => {
 
   const playSongHandler = async (song) => {
     setLoading(true);
-    try {
-      await axios.post(`${process.env.REACT_APP_BASE_URL}/recently-played`, { song_id: song.id }, {
+    if (song.id)
+      try {
+        await axios.post(`${process.env.REACT_APP_BASE_URL}/recently-played`, { song_id: song.id }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+        // dispatch(setRecentlyPlayedSongs(song));
+        const songLyrics = song.lyrics.split('\n');
+        dispatch(setSongToPlay(songLyrics))
+        dispatch(setSongToPlayId(song.id))
+        navigate('/player')
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    else if (song.song_id) {
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/genius-song${song.slug}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       });
-      // dispatch(setRecentlyPlayedSongs(song));
-    } catch (error) {
-      console.log(error);
-    } finally {
+      console.log(response.data.data);
+      dispatch(setSongToPlay(response.data.data));
+      dispatch(setSongToPlayId(song.song_id))
       setLoading(false);
+      navigate('/player')
     }
-    const songLyrics = song.lyrics.split('\n');
-    dispatch(setSongToPlay(songLyrics))
-    navigate('/player')
   }
 
   const optionsHandler = (song) => {
@@ -257,6 +258,64 @@ const Library = () => {
     }
   }
 
+  const handleScroll = () => {
+    const container = document.querySelector('.libraryListScroll');
+    const scrolledToBottom =
+      container.scrollHeight - container.scrollTop === container.clientHeight;
+
+    if (scrolledToBottom && Increment < lastPage) {
+      // Fetch more data when scrolled to the bottom and there is more data to load
+      const nextPage = Increment + 1;
+      setIncrement(nextPage);
+      fetchSongs(nextPage);
+    }
+  };
+
+  useEffect(() => {
+    // Attach scroll event listener to the list container
+    const container = document.querySelector('.libraryListScroll');
+    console.log("yo");
+    container.addEventListener('scroll', handleScroll);
+
+    // Cleanup event listener
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, [Increment, lastPage]);
+
+  const addGlobalSongToLibrary = async (song) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/genius-song${song.slug}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      const joinedText = response.data.data.join('\n');
+      const formData = {
+        title: song.title,
+        artist: song.artist,
+        genre: 'rock',
+        lyrics: joinedText
+      }
+      console.log(formData);
+      const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/song-create`, formData, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      dispatch(setSongs(res.data.data));
+      setGlobalSearch(false);
+      setSearchTerm('');
+    } catch (error) {
+      setError({
+        errorMessage: error?.response?.data?.message || error.message,
+        isError: true
+      });
+      console.log(error?.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <>
       {loading && <Loader />}
@@ -269,7 +328,7 @@ const Library = () => {
             <div className="container-fluid">
               <div className="list-container">
                 <div className="container-head">
-                  <h1>{globalSearch? "Search Songs": "Library"}</h1>
+                  <h1>{globalSearch ? "Search Songs" : "Library"}</h1>
                   {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
                   {!globalSearch && <form className="track-search">
                     <div className="form-group">
@@ -288,7 +347,7 @@ const Library = () => {
                       <div className="form-group">
                         <i className="fa-solid fa-magnifying-glass"></i>
                         <input
-                          style={{ width: 340 }}
+                          style={{ maxWidth: 340, width: 250 }}
                           type="search"
                           className="form-field"
                           placeholder="Search songs globally..."
@@ -299,7 +358,8 @@ const Library = () => {
                     </form>}
                     <button type="button" className="add-btn" onClick={globalSearchHandler} style={{ marginRight: 4 }}>
                       {/* <span className="txt">ADD NEW SONG</span> */}
-                      <i className={globalSearch? "fa-solid fa-remove mgRemove" : "fa-solid fa-search mgRemove"}></i>
+                      {!globalSearch ? <img style={{width:50, height:50, borderRadius: "50%"}} src="/genius-icon.png" alt="Genius Api Icon" /> :
+                        <i className="fa-solid fa-remove mgRemove"></i>}
                     </button>
                     <button type="button" className="add-btn" onClick={addSongHandler}>
                       {/* <span className="txt">ADD NEW SONG</span> */}
@@ -307,12 +367,74 @@ const Library = () => {
                     </button>
                   </div>
                 </div>
-                <div className="holder">
+                <div className="holder libraryListScroll">
                   <table className="list-table">
+                    {
+                      (globalSongsArray.length > 0 && globalSearch) && (
+                        globalSongsArray
+                          // .slice((Increment - 1) * 10, Increment * 10)
+                          .map((song, index) => (
+                            <tr key={song.song_id} className='trRow' >
+                              <td onClick={() => playSongHandler(song)}>
+                                <span className="num">{index + 1}</span>
+                                <i className="fa-regular fa-circle-pause"></i>
+                              </td>
+                              <td onClick={() => playSongHandler(song)}>
+                                <div className="title-box">
+                                  <div className="image"><img src="/list-icon.png" alt="image" /></div>
+                                  <strong className="title">{song.title}</strong>
+                                </div>
+                              </td>
+                              <td onClick={() => playSongHandler(song)}>
+                                <span className="cat-title">{song.artist}</span>
+                              </td>
+                              <td align="right">
+                                <ul className="list">
+                                  {/* <li>3:54</li> */}
+                                  {/* <li>
+                        <a href="#" className="fav">
+                            <i className="fa-regular fa-heart"></i>
+                            <i className="fa-solid fa-heart"></i>
+                        </a>
+                    </li> */}
+                                  <li className='linesParent' onClick={() => addGlobalSongToLibrary(song)}>
+                                    <i className="fa fa-plus-circle"></i>
+                                    {/* {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
+                                      <ul className='ulDropdown'>
+                                        <li onClick={editSongHandler.bind(null, song)}>Edit</li>
+                                        <li onClick={deleteSongHandler.bind(null, song)}>Delete</li>
+                                        <li onClick={addToSetlistHandler.bind(null, song)}>Add to Setlist</li>
+                                      </ul>
+                                    </div>} */}
+                                  </li>
+                                </ul>
+                              </td>
+                            </tr>
+
+
+
+                            // <SongComponents
+                            //   song={song}
+                            //   index={index}
+                            //   key={song.song_id}
+                            //   playSongHandler={playSongHandler}
+                            //   optionsHandler={optionsHandler}
+                            //   editSongHandler={editSongHandler}
+                            //   deleteSongHandler={deleteSongHandler}
+                            //   selectedSong={selectedSong}
+                            //   addToSetlistHandler={addToSetlistHandler}
+                            // />
+                            // <h1>yo</h1>
+                          ))
+                      )
+                    }
+
+
+
                     {
                       (filteredSongs.length > 0 && !globalSearch) ? (
                         filteredSongs
-                          .slice((Increment - 1) * 10, Increment * 10)
+                          // .slice((Increment - 1) * 10, Increment * 10)
                           .map((song, index) => (
                             <SongComponents
                               song={song}
@@ -328,7 +450,7 @@ const Library = () => {
                           ))
                       ) : globalSong.length > 0 ? (
                         globalSong
-                          .slice((Increment - 1) * 10, Increment * 10)
+                          // .slice((Increment - 1) * 10, Increment * 10)
                           .map((globalSong, index) => (
                             <SongComponents
                               song={globalSong}
@@ -346,15 +468,18 @@ const Library = () => {
                         <strong className="not-found">No Record Found</strong>
                       </div>
                     }
-                    
+
                   </table>
-                  {songs.length > 0 && <div className="pagination">
+                  {/* {songs.length > 0 && <div className="pagination">
                     {Increment !== 1 && <button onClick={() => handlePrevClick()} className='btnConfirm2'>
                       Prev
                     </button>}
                     {Increment !== lastPage && <button onClick={() => handleNextClick()} className='btnConfirm2'>
                       Next
                     </button>}
+                  </div>} */}
+                  {(songs.length === 0 && !globalSearch) && <div className="holder no-record">
+                    <strong className="not-found">No Record Found</strong>
                   </div>}
                 </div>
               </div>
@@ -370,7 +495,6 @@ const Library = () => {
             <img src="/logo.svg" alt="logo" className="side-logo" />
           </div>
         </div>
-
       </div>
     </>
   )

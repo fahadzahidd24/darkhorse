@@ -7,10 +7,12 @@ import { HexColorPicker } from 'react-colorful'
 import ColorPicker from '../../../components/colorPicker'
 import axios from 'axios'
 import Loader from '../../../components/loader'
+import { setSetListSongToPlayId } from '../../../store/slices/setlist-slice'
 
-const Player = () => {
-    const { songToPlay, songToPlayId, settings, songs } = useSelector((state) => state.songs)
-    console.log(songs);
+const SetlistPlayer = () => {
+    const { setlistSongToPlayId, setListSongs } = useSelector((state) => state.setlist);
+    const { songToPlay, settings } = useSelector((state) => state.songs);
+    console.log(setListSongs);
     const [color, setColor] = useState("#000000");
     const [loading, setLoading] = useState(false);
     const [fontColor, setFontColor] = useState("#ffffff");
@@ -27,7 +29,7 @@ const Player = () => {
     let emSpeed = 121 - speed;
     if (emSpeed > 120)
         emSpeed = 0;
-    
+
     const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
     const [isFontColorPickerOpen, setIsFontColorPickerOpen] = useState(false);
 
@@ -69,22 +71,22 @@ const Player = () => {
     }, [togglePlay]);
 
     const playNextSong = async () => {
-        if (songs.length > 0) {
-            const index = songs.findIndex((song) => song.id === songToPlayId);
-            if (index < songs.length - 1) {
+        if (setListSongs.length > 0) {
+            const index = setListSongs.findIndex((song) => song.id === setlistSongToPlayId);
+            if (index < setListSongs.length - 1) {
                 setLoading(true);
                 try {
                     await axios.post(`${process.env.REACT_APP_BASE_URL}/recently-played`, {
-                        song_id: songs[index + 1].id
+                        song_id: setListSongs[index + 1].id
                     }, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    dispatch(setRecentlyPlayedSongs(songs[index + 1]));
-                    const lyrics = songs[index + 1].lyrics.split('\n');
+                    dispatch(setRecentlyPlayedSongs(setListSongs[index + 1]));
+                    const lyrics = setListSongs[index + 1].lyrics.split('\n');
                     dispatch(setSongToPlay(lyrics));
-                    dispatch(setSongToPlayId(songs[index + 1].id));
+                    dispatch(setSetListSongToPlayId(setListSongs[index + 1].id));
                     setLinesToSkip(0);
                 } catch (error) {
                     console.log(error);
@@ -96,16 +98,16 @@ const Player = () => {
                 setLoading(true);
                 try {
                     await axios.post(`${process.env.REACT_APP_BASE_URL}/recently-played`, {
-                        song_id: songs[0].id
+                        song_id: setListSongs[0].id
                     }, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    dispatch(setRecentlyPlayedSongs(songs[0]));
-                    const lyrics = songs[0].lyrics.split('\n');
+                    dispatch(setRecentlyPlayedSongs(setListSongs[0]));
+                    const lyrics = setListSongs[0].lyrics.split('\n');
                     dispatch(setSongToPlay(lyrics));
-                    dispatch(setSongToPlayId(songs[0].id));
+                    dispatch(setSetListSongToPlayId(setListSongs[0].id));
                     setLinesToSkip(0);
                 } catch (error) {
                     console.log(error);
@@ -117,22 +119,22 @@ const Player = () => {
     }
 
     const playPrevSong = async () => {
-        if (songs.length > 0) {
-            const index = songs.findIndex((song) => song.id === songToPlayId);
+        if (setListSongs.length > 0) {
+            const index = setListSongs.findIndex((song) => song.id === setlistSongToPlayId);
             if (index > 0) {
                 setLoading(true);
                 try {
                     await axios.post(`${process.env.REACT_APP_BASE_URL}/recently-played`, {
-                        song_id: songs[index - 1].id
+                        song_id: setListSongs[index - 1].id
                     }, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    dispatch(setRecentlyPlayedSongs(songs[index - 1]));
-                    const lyrics = songs[index - 1].lyrics.split('\n');
+                    dispatch(setRecentlyPlayedSongs(setListSongs[index - 1]));
+                    const lyrics = setListSongs[index - 1].lyrics.split('\n');
                     dispatch(setSongToPlay(lyrics));
-                    dispatch(setSongToPlayId(songs[index - 1].id));
+                    dispatch(setSetListSongToPlayId(setListSongs[index - 1].id));
                     setLinesToSkip(0);
                 } catch (error) {
                     console.log(error);
@@ -307,4 +309,4 @@ const Player = () => {
     )
 }
 
-export default Player
+export default SetlistPlayer;
