@@ -8,7 +8,7 @@ import { useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../../components/loader';
 import ErrorModal from '../../../components/errorModal';
-import { setRecentlyPlayedSongs, setSongToEdit, setSongToPlay, setSongToPlayId } from '../../../store/slices/song-slice';
+import { setSongToEdit, setSongToPlay } from '../../../store/slices/song-slice';
 import { Reorder, useDragControls, useMotionValue } from "framer-motion"
 import { Item } from '../../../components/Item';
 import { ReorderIcon } from '../../../components/Icon';
@@ -91,7 +91,6 @@ const SetlistSongs = () => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            // dispatch(setRecentlyPlayedSongs(song));
         } catch (error) {
             console.log(error);
         } finally {
@@ -115,28 +114,9 @@ const SetlistSongs = () => {
                                 <div class="container-head">
                                     <h1>{setListToGet.title}</h1>
                                     {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
-                                    {/* <button type="button" class="add-btn" onClick={addSetListHandler}>
-                                        <span class="txt">ADD NEW SETLIST</span>
-                                        <i class="fa-solid fa-plus"></i>
-                                    </button> */}
+                                    
                                 </div>
                                 <div class="holder libraryListScroll">
-                                    {/* <table class="list-table">
-                                        {setListSongs?.map((song, index) => (
-                                            <tr key={song.id} className='trRow'>
-                                                <td>
-                                                    <span class="num">{index + 1}</span>
-                                                    <i class="fa-regular fa-circle-pause"></i>
-                                                </td>
-                                                <td>
-                                                    <div class="title-box">
-                                                        <div class="image"><img src="/list-icon.png" alt="image" /></div>
-                                                        <strong class="title">{song.title}</strong>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </table> */}
                                     <table className="list-table">
                                         {/* <Reorder.Group axis="y" onReorder={setItems} values={items}> */}
                                             {/* {console.log("ssss",setListSongs)} */}
