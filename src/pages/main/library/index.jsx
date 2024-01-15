@@ -464,9 +464,7 @@ const Library = () => {
                               addToSetlistHandler={addToSetlistHandler}
                             />
                           ))
-                      ) : <div className="holder no-record">
-                        <strong className="not-found">No Record Found</strong>
-                      </div>
+                      ) : <></>
                     }
 
                   </table>
@@ -478,10 +476,10 @@ const Library = () => {
                       Next
                     </button>}
                   </div>} */}
-                  {/* {(songs.length === 0 && !globalSearch) && <div className="holder no-record">
-                    <strong className="not-found">No Record Found</strong>
-                  </div>} */}
                 </div>
+                  {((songs.length === 0 && !globalSearch) || (globalSongsArray.length === 0 && globalSearch)) && <div className="holder no-record">
+                    <strong className="not-found">No Record Found</strong>
+                  </div>}
               </div>
             </div>
           </main>
