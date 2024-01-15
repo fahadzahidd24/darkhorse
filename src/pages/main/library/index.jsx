@@ -478,9 +478,9 @@ const Library = () => {
                       Next
                     </button>}
                   </div>} */}
-                  {(songs.length === 0 && !globalSearch) && <div className="holder no-record">
+                  {/* {(songs.length === 0 && !globalSearch) && <div className="holder no-record">
                     <strong className="not-found">No Record Found</strong>
-                  </div>}
+                  </div>} */}
                 </div>
               </div>
             </div>
