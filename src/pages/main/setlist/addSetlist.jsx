@@ -30,7 +30,7 @@ const AddSetlist = () => {
 
     const addSetListHandler = async (e) => {
         e.preventDefault();
-        if (iformData.title === '') {
+        if (!iformData.title) {
             setError({
                 errorMessage: 'Please Give Setlist Name',
                 isError: true
