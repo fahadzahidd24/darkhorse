@@ -11,8 +11,13 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmationModel from '../../../components/confirmationModel';
 import SetlistModal from '../../../components/setlistModal';
 import SongComponents from '../../../components/SongComponents';
+import { Reorder, useDragControls, useMotionValue } from 'framer-motion';
+import { ReorderIcon } from '../../../components/Icon';
 
 const Library = () => {
+  const controls = useDragControls();
+  const y = useMotionValue(0);
+  const dragControls = useDragControls();
   const { songs, lastPage: lastPg } = useSelector((state) => state.songs);
   const [lastPage, setLastPage] = useState(lastPg);
   const navigate = useNavigate();
@@ -27,7 +32,7 @@ const Library = () => {
   const [songToDelete, setSongToDelete] = useState();
   const [songToSetlist, setSongToSetlist] = useState();
   const [globalSongsArray, setGlobalSongsArray] = useState([]);
-
+  const [filteredSongs, setFilteredSongs] = useState([]);
   const [error, setError] = useState({
     errorMessage: '',
     isError: false
@@ -35,9 +40,12 @@ const Library = () => {
 
   const [Increment, setIncrement] = useState(1);
 
-  var filteredSongs = songs.filter((song) =>
-    song.title.toLowerCase().startsWith(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    setFilteredSongs(songs.filter((song) =>
+      song.title.toLowerCase().startsWith(searchTerm.toLowerCase())
+    ))
+  }, [searchTerm, songs])
+
   useLayoutEffect(() => {
     if (songs.length === 0) {
       const fetchSongs = async () => {
@@ -316,6 +324,23 @@ const Library = () => {
     }
   }
 
+  const reorderHandler = async() => {
+    const itemsIds = filteredSongs.map((item, index) => {
+        return item.id;
+    });
+    console.log({itemsIds});
+    try {
+        await axios.post(`${process.env.REACT_APP_BASE_URL}/reorder-songs`, { new_order: itemsIds }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+        dispatch(setSongsArray(filteredSongs));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
   return (
     <>
       {loading && <Loader />}
@@ -330,7 +355,7 @@ const Library = () => {
                 <div className="container-head">
                   <h1>{globalSearch ? "Search Songs" : "Library"}</h1>
                   {error.isError && <ErrorModal onPressOk={handlerOkPress} errorMessage={error.errorMessage} />}
-                  {!globalSearch && <form onSubmit={(e)=> e.preventDefault()} className="track-search">
+                  {!globalSearch && <form onSubmit={(e) => e.preventDefault()} className="track-search">
                     <div className="form-group">
                       <i className="fa-solid fa-magnifying-glass"></i>
                       <input
@@ -343,7 +368,7 @@ const Library = () => {
                     </div>
                   </form>}
                   <div className='d-flex'>
-                    {globalSearch && <form className="track-search" onSubmit={(e)=> e.preventDefault()} style={{ marginRight: 10 }}>
+                    {globalSearch && <form className="track-search" onSubmit={(e) => e.preventDefault()} style={{ marginRight: 10 }}>
                       <div className="form-group">
                         <i className="fa-solid fa-magnifying-glass"></i>
                         <input
@@ -358,7 +383,7 @@ const Library = () => {
                     </form>}
                     <button type="button" className="add-btn" onClick={globalSearchHandler} style={{ marginRight: 4 }}>
                       {/* <span className="txt">ADD NEW SONG</span> */}
-                      {!globalSearch ? <img style={{width:50, height:50, borderRadius: "50%"}} src="/genius-icon.png" alt="Genius Api Icon" /> :
+                      {!globalSearch ? <img style={{ width: 50, height: 50, borderRadius: "50%" }} src="/genius-icon.png" alt="Genius Api Icon" /> :
                         <i className="fa-solid fa-remove mgRemove"></i>}
                     </button>
                     <button type="button" className="add-btn" onClick={addSongHandler}>
@@ -372,7 +397,6 @@ const Library = () => {
                     {
                       (globalSongsArray.length > 0 && globalSearch) && (
                         globalSongsArray
-                          // .slice((Increment - 1) * 10, Increment * 10)
                           .map((song, index) => (
                             <tr key={song.song_id} className='trRow' >
                               <td onClick={() => playSongHandler(song)}>
@@ -390,67 +414,65 @@ const Library = () => {
                               </td>
                               <td align="right">
                                 <ul className="list">
-                                  {/* <li>3:54</li> */}
-                                  {/* <li>
-                        <a href="#" className="fav">
-                            <i className="fa-regular fa-heart"></i>
-                            <i className="fa-solid fa-heart"></i>
-                        </a>
-                    </li> */}
                                   <li className='linesParent' onClick={() => addGlobalSongToLibrary(song)}>
                                     <i className="fa fa-plus-circle"></i>
-                                    {/* {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
-                                      <ul className='ulDropdown'>
-                                        <li onClick={editSongHandler.bind(null, song)}>Edit</li>
-                                        <li onClick={deleteSongHandler.bind(null, song)}>Delete</li>
-                                        <li onClick={addToSetlistHandler.bind(null, song)}>Add to Setlist</li>
-                                      </ul>
-                                    </div>} */}
                                   </li>
                                 </ul>
                               </td>
                             </tr>
-
-
-
-                            // <SongComponents
-                            //   song={song}
-                            //   index={index}
-                            //   key={song.song_id}
-                            //   playSongHandler={playSongHandler}
-                            //   optionsHandler={optionsHandler}
-                            //   editSongHandler={editSongHandler}
-                            //   deleteSongHandler={deleteSongHandler}
-                            //   selectedSong={selectedSong}
-                            //   addToSetlistHandler={addToSetlistHandler}
-                            // />
-                            // <h1>yo</h1>
                           ))
                       )
                     }
 
-
-
                     {
                       (filteredSongs.length > 0 && !globalSearch) ? (
-                        filteredSongs
-                          // .slice((Increment - 1) * 10, Increment * 10)
-                          .map((song, index) => (
-                            <SongComponents
-                              song={song}
-                              index={index}
-                              key={song.id}
-                              playSongHandler={playSongHandler}
-                              optionsHandler={optionsHandler}
-                              editSongHandler={editSongHandler}
-                              deleteSongHandler={deleteSongHandler}
-                              selectedSong={selectedSong}
-                              addToSetlistHandler={addToSetlistHandler}
-                            />
-                          ))
-                      ) : globalSong.length > 0 ? (
+                        <Reorder.Group axis="y" onReorder={setFilteredSongs} values={filteredSongs}>
+                          {filteredSongs
+                            .map((song, index) => (
+                              <Reorder.Item
+                                key={song.id}
+                                value={song}
+                                id={song.id}
+                                dragListener={true}
+                                dragControls={dragControls}
+                                onDragEnd={reorderHandler}
+                              >
+                                <tr key={song.id} className='trRow d-flex w-full justify-content-between align-items-center' >
+                                  <td onClick={() => playSongHandler(song)}>
+                                    <span className="num">{index + 1}</span>
+                                    <i className="fa-regular fa-circle-pause"></i>
+                                  </td>
+                                  <td onClick={() => playSongHandler(song)}>
+                                    <div className="title-box">
+                                      <div className="image"><img src="/list-icon.png" alt="image" /></div>
+                                      <strong className="title">{song.title}</strong>
+                                    </div>
+                                  </td>
+                                  <td onClick={() => playSongHandler(song)}>
+                                    <span className="cat-title">{song.artist}</span>
+                                  </td>
+                                  <td align="right">
+                                    <ul className="list">
+                                      <li className='linesParent' onClick={() => optionsHandler(song)}>
+                                        {/* <i className="fa-solid fa-grip-lines"></i> */}
+                                        <ReorderIcon dragControls={dragControls} />
+                                        {(selectedSong && selectedSong.id === song.id) && <div className='dropdown'>
+                                          <ul className='ulDropdown'>
+                                            <li onClick={editSongHandler.bind(null, song)}>Edit</li>
+                                            <li onClick={deleteSongHandler.bind(null, song)}>Delete</li>
+                                            <li onClick={addToSetlistHandler.bind(null, song)}>Add to Setlist</li>
+                                          </ul>
+                                        </div>}
+                                      </li>
+                                    </ul>
+                                  </td>
+                                </tr>
+                              </Reorder.Item>
+                            ))
+                          }
+                        </Reorder.Group>
+                      ) : (globalSong.length > 0 && !globalSearch) ? (
                         globalSong
-                          // .slice((Increment - 1) * 10, Increment * 10)
                           .map((globalSong, index) => (
                             <SongComponents
                               song={globalSong}
@@ -468,18 +490,10 @@ const Library = () => {
                     }
 
                   </table>
-                  {/* {songs.length > 0 && <div className="pagination">
-                    {Increment !== 1 && <button onClick={() => handlePrevClick()} className='btnConfirm2'>
-                      Prev
-                    </button>}
-                    {Increment !== lastPage && <button onClick={() => handleNextClick()} className='btnConfirm2'>
-                      Next
-                    </button>}
-                  </div>} */}
-                </div>
                   {((songs.length === 0 && !globalSearch) || (globalSongsArray.length === 0 && globalSearch)) && <div className="holder no-record">
                     <strong className="not-found">No Record Found</strong>
                   </div>}
+                </div>
               </div>
             </div>
           </main>
