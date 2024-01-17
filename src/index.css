@@ -1593,15 +1593,26 @@ textarea.form-control {
 
 @media (min-width: 1080px) {
   #main .box .box-head h1 {
-    font-size: 128px;
+    font-size: 110px;
+    margin-bottom: 50px;
   }
 }
+
 
 @media (min-width: 1080px) and (orientation: landscape) {
   #main .box .box-head h1 {
     font-size: 88px;
-    margin: 0 0 22px;
+    margin: 0 0 35px;
   }
+}
+
+#add-btnId:hover{
+  background-color: #020202;
+  color: white;
+}
+
+.globeImg:hover{
+  transform: scale(1.1);
 }
 
 #main .box .box-head h1 .icon {

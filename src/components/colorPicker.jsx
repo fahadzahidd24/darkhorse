@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import style from './popup.module.css';
 
-const ColorPicker = ({ color, setColor, onClose }) => {
+const ColorPicker = ({ color, setColor, onClose, line }) => {
   const colorPickerRef = useRef(null);
 
   const handleClickOutside = (event) => {
@@ -25,6 +25,7 @@ const ColorPicker = ({ color, setColor, onClose }) => {
   return (
     <div className={style.popup}>
       <div ref={colorPickerRef} className={style.popup_inner}>
+        {line && <h6 className='text-white'>After selecting color, click on respective lines to change their color</h6>}
         <HexColorPicker color={color} onChange={setColor} />
       </div>
     </div>

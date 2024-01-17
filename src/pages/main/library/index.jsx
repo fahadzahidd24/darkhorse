@@ -381,9 +381,9 @@ const Library = () => {
                         />
                       </div>
                     </form>}
-                    <button type="button" className="add-btn" onClick={globalSearchHandler} style={{ marginRight: 4 }}>
+                    <button type="button" id='add-btnId' className="add-btn" onClick={globalSearchHandler} style={{ marginRight: 4 }}>
                       {/* <span className="txt">ADD NEW SONG</span> */}
-                      {!globalSearch ? <img style={{ width: 50, height: 50, borderRadius: "50%" }} src="/genius-icon.png" alt="Genius Api Icon" /> :
+                      {!globalSearch ? <img className='globeImg' style={{ width: 50, height: 50, borderRadius: "50%", filter:'invert()' }} src="/world.png" alt="Genius Api Icon" /> :
                         <i className="fa-solid fa-remove mgRemove"></i>}
                     </button>
                     <button type="button" className="add-btn" onClick={addSongHandler}>

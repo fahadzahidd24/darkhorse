@@ -11,7 +11,11 @@
   display: none;
   width: 0px;
 }
-
+.selected{
+  background-color: #282c34;
+  color: rgb(152, 0, 0);
+  border-radius: 5px;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;

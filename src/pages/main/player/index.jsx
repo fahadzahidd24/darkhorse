@@ -10,10 +10,10 @@ import Loader from '../../../components/loader'
 
 const Player = () => {
     const { songToPlay, songToPlayId, settings, songs } = useSelector((state) => state.songs)
-    console.log(songs);
     const [color, setColor] = useState("#000000");
     const [loading, setLoading] = useState(false);
     const [fontColor, setFontColor] = useState("#ffffff");
+    const [lineColor, setLineColor] = useState(fontColor);
     const [currentLine, setCurrentLine] = useState(0);
     const [value, setValue] = useState(30);
     const [speedAtStop, setSpeedAtStop] = useState();
@@ -27,9 +27,11 @@ const Player = () => {
     let emSpeed = 121 - speed;
     if (emSpeed > 120)
         emSpeed = 0;
-    
+
     const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
     const [isFontColorPickerOpen, setIsFontColorPickerOpen] = useState(false);
+    const [isLineColorPickerOpen, setIsLineColorPickerOpen] = useState(false);
+    const [selectedLines, setSelectedLines] = useState([]);
 
     const togglePlay = () => {
         setIsPlaying((prevIsPlaying) => !prevIsPlaying);
@@ -184,6 +186,28 @@ const Player = () => {
         setIsFontColorPickerOpen(true);
     }
 
+    const openLineColorPicker = () => {
+        setIsLineColorPickerOpen(true);
+    }
+
+    const selectLinesHandler = (index) => {
+        const object = {
+            index: index,
+            color: lineColor
+        }
+        setSelectedLines((prevSelectedLines) => {
+            const index = prevSelectedLines.findIndex((lineObj) => lineObj.index === object.index);
+            if (index === -1) {
+                return [...prevSelectedLines, object];
+            }
+            else {
+                const newSelectedLines = [...prevSelectedLines];
+                newSelectedLines.splice(index, 1);
+                return newSelectedLines;
+            }
+        });
+    }
+
     return (
         <div class="main-template">
             {loading && <Loader />}
@@ -222,6 +246,19 @@ const Player = () => {
                                         {isFontColorPickerOpen && (
                                             <ColorPicker color={fontColor} setColor={setFontColor} onClose={() => setIsFontColorPickerOpen(false)} />
                                         )}
+                                        {isLineColorPickerOpen && (
+                                            <ColorPicker color={lineColor} line={true} setColor={setLineColor} onClose={() => setIsLineColorPickerOpen(false)} />
+                                        )}
+                                    </div>
+                                    <div class="frame">
+                                        <div className='d-flex w-full justify-content-between'>
+                                            <strong class="txt">LINE COLOR</strong>
+                                        </div>
+                                        <div className='d-flex w-full justify-content-between'>
+                                            <button class="color-picker" onClick={openLineColorPicker}>
+                                                <i class="fa-solid fa-palette"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="control-box">
@@ -286,7 +323,9 @@ const Player = () => {
                                         // }`}
                                         // style={{ opacity: index < currentLine ? 0.5 : fontColor, color: fontColor }}>{line}</li>
                                         <li key={index} className="lyrics-line"
-                                            style={{ color: fontColor }}>{line}</li>
+                                            style={{
+                                                color: selectedLines.find((lineObj) => lineObj.index === index) ? selectedLines.find((lineObj) => lineObj.index === index).color : fontColor,
+                                            }} onClick={selectLinesHandler.bind(null, index, line)}>{line}</li>
                                     ))}
                                 </div>
                             </div>
