@@ -27,7 +27,7 @@ const Welcome = () => {
                             </div>
                             <ul className="list">
                                 <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Lyrics Stage Prompter</a></li>
-                                <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Sheet Music</a></li>
+                                {/* <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Sheet Music</a></li> */}
                                 <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Create Custom Setlists</a></li>
                                 <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Easily Import Songs</a></li>
                                 <li><a href="#"><img className="icon" src="/list-icon.png" alt="icon" />Customizable Lyrics Display</a></li>

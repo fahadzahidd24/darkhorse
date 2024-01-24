@@ -11,7 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 } */
-
+@font-face {
+  font-family: "TimesRoman";
+  src: url(../src/styles/times.ttf);
+}
 
 *,
 *::before,
@@ -27,7 +30,7 @@ code {
  *    without disabling user zoom.
  */
 html {
-  font-family: sans-serif;
+  font-family: "TimesRoman", sans-serif;
   /* 1 */
   -ms-text-size-adjust: 100%;
   /* 2 */
@@ -461,7 +464,8 @@ body {
   color: #2f2f2f;
   min-width: 375px;
   /* font-family: "Poppins", sans-serif; */
-  font-family: Arial, Helvetica, sans-serif
+  /* font-family: Arial, Helvetica, sans-serif */
+  font-family: "TimesRoman", sans-serif
 }
 
 @media (min-width: 992px) {
@@ -504,7 +508,8 @@ h6,
   line-height: 1;
   font-weight: 800;
   /* font-family: "Nunito", sans-serif; */
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: "TimesRoman", sans-serif;
 }
 
 h1,
@@ -625,7 +630,8 @@ a {
   -ms-flex-pack: center;
   justify-content: center;
   /* font-family: "Raleway", sans-serif; */
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: "TimesRoman", sans-serif;
 }
 
 .settingsBtnDiv {
@@ -799,8 +805,9 @@ textarea.form-control {
   letter-spacing: 0.05em;
   border: 2px solid #888;
   /* font: 400 25px/1 "Luckiest Guy", sans-serif; */
-  font: 400 25px/1 Arial, Helvetica, sans-serif;
-  font: 400 25px/1 ;
+  /* font: 400 25px/1 Arial, Helvetica, sans-serif; */
+  font: 400 25px/1 "TimesRoman", sans-serif;
+  font: 400 25px/1;
   background: url('/public/bg-button.png') no-repeat;
   background-size: cover;
   margin: 0px 20px
@@ -814,7 +821,8 @@ textarea.form-control {
   letter-spacing: 0.05em;
   border: 2px solid #888;
   /* font: 400 25px/1 "Luckiest Guy", sans-serif; */
-  font: 400 25px/1 Arial, Helvetica, sans-serif;
+  /* font: 400 25px/1 Arial, Helvetica, sans-serif; */
+  font: 400 25px/1 "TimesRoman", sans-serif;
   background: url('/public/bg-button.png') no-repeat;
   background-size: cover;
   margin: 0px 5px
@@ -890,7 +898,7 @@ textarea.form-control {
   -ms-flex-align: center;
   align-items: center;
   text-transform: capitalize;
-  font: 600 12px/1.25 "Nunito", sans-serif;
+  font: 600 12px/1.25 "TimesRoman", sans-serif;
 }
 
 @media (min-width: 576px) {
@@ -1012,7 +1020,7 @@ textarea.form-control {
   -ms-flex-pack: center;
   justify-content: center;
   text-transform: uppercase;
-  font: 600 12px/1 "Inter", sans-serif;
+  font: 600 12px/1 "TimesRoman", sans-serif;
 }
 
 @media (max-width: 576px) {
@@ -1064,7 +1072,7 @@ textarea.form-control {
   margin: 0 8px;
   display: inline-block;
   text-transform: capitalize;
-  font: 600 12px/1.1 "Nunito", sans-serif;
+  font: 600 12px/1.1 "TimesRoman", sans-serif;
 }
 
 @media (max-width: 576px) {
@@ -1575,7 +1583,8 @@ textarea.form-control {
   justify-content: center;
   font-weight: 900 !important;
   /* font: 400 44px/1.5 "Luckiest Guy", sans-serif; */
-  font: 400 44px/1.5 Arial, Helvetica, sans-serif;
+  /* font: 400 44px/1.5 Arial, Helvetica, sans-serif; */
+  font: 400 44px/1.5 "TimesRoman", sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -1606,12 +1615,12 @@ textarea.form-control {
   }
 }
 
-#add-btnId:hover{
+#add-btnId:hover {
   background-color: #020202;
   color: white;
 }
 
-.globeImg:hover{
+.globeImg:hover {
   transform: scale(1.1);
 }
 
@@ -1644,7 +1653,7 @@ textarea.form-control {
 #main .box .box-head .lead {
   color: #fff;
   margin: 0 0 20px;
-  font: 800 16px/normal "Open Sans", sans-serif;
+  font: 800 16px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -1696,7 +1705,7 @@ textarea.form-control {
   padding: 0;
   list-style: none;
   margin: 0 0 20px;
-  font: 700 16px/normal "Open Sans", sans-serif;
+  font: 700 16px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -1829,7 +1838,7 @@ textarea.form-control {
   text-align: center;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #f00;
-  font: 600 16px/normal "Open Sans", sans-serif;
+  font: 600 16px/normal "TimesRoman", sans-serif;
 }
 
 @supports (-webkit-text-stroke: 1px #f00) {
@@ -1952,7 +1961,8 @@ textarea.form-control {
   padding: 12px 15px 12px 52px;
   background: rgba(255, 0, 0, 0.42);
   /* font: 400 14px/1 "Luckiest Guy", sans-serif; */
-  font: 400 14px/1 Arial, Helvetica, sans-serif;
+  /* font: 400 14px/1 Arial, Helvetica, sans-serif; */
+  font: 400 14px/1 "TimesRoman", sans-serif;
   border: 2px solid rgba(255, 255, 255, 0.5);
   -webkit-box-shadow: 4px 8px 10px 0px rgba(255, 0, 0, 0.25);
   box-shadow: 4px 8px 10px 0px rgba(255, 0, 0, 0.25);
@@ -2018,7 +2028,7 @@ textarea.form-control {
 
 #main .link {
   color: #fff;
-  font: 400 12px/1 "Open Sans", sans-serif;
+  font: 400 12px/1 "TimesRoman", sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -2034,7 +2044,7 @@ textarea.form-control {
   }
 }
 
-.mgRemove{
+.mgRemove {
   margin: 0 !important;
 }
 
@@ -2047,7 +2057,8 @@ textarea.form-control {
   border: 2px solid #888;
   font-weight: 900 !important;
   /* font: 400 16px/1 "Luckiest Guy", sans-serif; */
-  font: 400 16px/1 Arial, Helvetica, sans-serif;
+  /* font: 400 16px/1 Arial, Helvetica, sans-serif; */
+  font: 400 16px/1 "TimesRoman", sans-serif;
   background: url(/public/bg-button.png) no-repeat;
   background-size: cover;
   -webkit-box-shadow: 7px 5px 4px 0px rgba(0, 0, 0, 0.43);
@@ -2431,7 +2442,7 @@ textarea.form-control {
   display: block;
   width: 100%;
   height: auto;
-  opacity:0.9;
+  opacity: 0.9;
 }
 
 .splash-image-frame .duplicate {
@@ -2445,11 +2456,11 @@ textarea.form-control {
   transform-origin: left;
   position: absolute;
   text-transform: uppercase;
-  font: 400 50px/1.5 "Inter", sans-serif;
+  font: 400 50px/1.5 "TimesRoman", sans-serif;
   /* opacity: 0.65; */
 }
 
-.imgHolder{
+.imgHolder {
   padding: 0 !important;
 }
 
@@ -2600,7 +2611,7 @@ textarea.form-control {
 }
 
 .list-container {
-  position:relative;
+  position: relative;
   min-height: 50vh;
   max-height: 100%;
   overflow: hidden;
@@ -2722,7 +2733,7 @@ textarea.form-control {
   text-transform: uppercase;
   -webkit-transition: all ease-in-out 0.3s;
   transition: all ease-in-out 0.3s;
-  font: 700 20px/1 "Nunito", sans-serif;
+  font: 700 20px/1 "TimesRoman", sans-serif;
   -webkit-box-shadow: -17px 15px 8px 0 rgba(0, 0, 0, 0.44);
   box-shadow: -17px 15px 8px 0 rgba(0, 0, 0, 0.44);
 }
@@ -2792,12 +2803,14 @@ textarea.form-control {
 }
 
 
-.libraryListScroll{
+.libraryListScroll {
   overflow: scroll;
   max-height: 42vh;
   min-height: 42vh;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .libraryListScroll::-webkit-scrollbar {
@@ -2841,7 +2854,7 @@ textarea.form-control {
   display: inline-block;
   text-transform: capitalize;
   border-bottom: 2px dashed #7E7E7E;
-  font: 700 20px/1 "Nunito", sans-serif;
+  font: 700 20px/1 "TimesRoman", sans-serif;
 }
 
 @media (min-width: 992px) {
@@ -2948,7 +2961,7 @@ textarea.form-control {
   padding: 5px;
   color: #626a66;
   width: 18.3333%;
-  font: 600 14px/1 "Inter", sans-serif;
+  font: 600 14px/1 "TimesRoman", sans-serif;
 }
 
 @media (min-width: 576px) {
@@ -3084,7 +3097,7 @@ textarea.form-control {
   display: block;
   color: #afb6b2;
   text-transform: capitalize;
-  font: 600 10px/normal "Nunito", sans-serif;
+  font: 600 10px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 576px) {
@@ -3103,7 +3116,7 @@ textarea.form-control {
   color: #fff;
   display: block;
   text-transform: capitalize;
-  font: 600 10px/normal "Nunito", sans-serif;
+  font: 600 10px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 576px) {
@@ -3133,7 +3146,7 @@ textarea.form-control {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  font: 600 12px/normal "Nunito", sans-serif;
+  font: 600 12px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 576px) {
@@ -3301,7 +3314,7 @@ textarea.form-control {
   padding: 0;
   list-style: none;
   text-align: center;
-  font: 700 12px/normal "Nunito", sans-serif;
+  font: 700 12px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 576px) {
@@ -3332,6 +3345,35 @@ textarea.form-control {
   .lyrics-list {
     font-size: 78px;
   }
+}
+
+.fullScreenIcon {
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+.fullScreenContainerFluid {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  padding: 0;
+}
+
+.navLinkColor {
+  display: block;
+  color: #df1b23;
+  padding: 0 0 3px;
+  border-bottom: 2px solid transparent;
+}
+
+.fullScreenListContainer {
+  max-height: 100%;
+  min-width: 100%;
+  border-radius: 0;
+  background: rgb(0, 0, 0);
 }
 
 .lyrics-list li {
@@ -3412,7 +3454,7 @@ textarea.form-control {
 .settings-controls .heading {
   color: #fff;
   display: block;
-  font: 400 18px/normal "Nunito", sans-serif;
+  font: 400 18px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 992px) {
@@ -3450,7 +3492,7 @@ textarea.form-control {
   display: block;
   margin: 0 0 10px;
   text-transform: uppercase;
-  font: 700 12px/normal "Nunito", sans-serif;
+  font: 700 12px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 992px) {
@@ -3676,7 +3718,7 @@ textarea.form-control {
   color: #fff;
   display: block;
   margin: 0 0 20px;
-  font: 500 20px/normal "Nunito", sans-serif;
+  font: 500 20px/normal "TimesRoman", sans-serif;
 }
 
 @media (min-width: 768px) {
@@ -3862,7 +3904,7 @@ textarea.form-control {
   -webkit-box-shadow: none;
   box-shadow: none;
   padding: 12px 15px;
-  font: 500 14px/1 "Nunito", sans-serif;
+  font: 500 14px/1 "TimesRoman", sans-serif;
 }
 
 @media (min-width: 992px) {
@@ -3900,7 +3942,7 @@ textarea.form-control {
   background-size: 8px 8px, 8px 8px;
   background-repeat: no-repeat;
   padding: 15px 15px 14px;
-  font: 500 14px/1 "Nunito", sans-serif;
+  font: 500 14px/1 "TimesRoman", sans-serif;
 }
 
 @media (min-width: 992px) {
@@ -4040,7 +4082,7 @@ textarea.form-control {
   user-select: none;
   position: relative;
   padding-left: 30px;
-  font: 500 16px/normal "Nunito", sans-serif;
+  font: 500 16px/normal "TimesRoman", sans-serif;
 }
 
 #main .form-container .lyrics-form .option:not(:last-child) {

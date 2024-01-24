@@ -22,6 +22,7 @@ const Player = () => {
     const dispatch = useDispatch();
     const [isPlaying, setIsPlaying] = useState(true);
     const [linesToSkip, setLinesToSkip] = useState(0);
+    const [fullScreen, setFullScreen] = useState(false);
 
     const speed = playSpeed;
     let emSpeed = 121 - speed;
@@ -83,7 +84,7 @@ const Player = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    dispatch(setRecentlyPlayedSongs(songs[index + 1]));
+                    // dispatch(setRecentlyPlayedSongs(songs[index + 1]));
                     const lyrics = songs[index + 1].lyrics.split('\n');
                     dispatch(setSongToPlay(lyrics));
                     dispatch(setSongToPlayId(songs[index + 1].id));
@@ -104,7 +105,7 @@ const Player = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    dispatch(setRecentlyPlayedSongs(songs[0]));
+                    // dispatch(setRecentlyPlayedSongs(songs[0]));
                     const lyrics = songs[0].lyrics.split('\n');
                     dispatch(setSongToPlay(lyrics));
                     dispatch(setSongToPlayId(songs[0].id));
@@ -131,7 +132,7 @@ const Player = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    dispatch(setRecentlyPlayedSongs(songs[index - 1]));
+                    // dispatch(setRecentlyPlayedSongs(songs[index - 1]));
                     const lyrics = songs[index - 1].lyrics.split('\n');
                     dispatch(setSongToPlay(lyrics));
                     dispatch(setSongToPlayId(songs[index - 1].id));
@@ -159,6 +160,10 @@ const Player = () => {
 
         return () => clearInterval(scrollInterval);
     }, [isPlaying, songToPlay, currentLine]);
+
+    if (fullScreen) {
+        dispatch(setSettings(false))
+    }
 
     const closeSettingsHandler = () => {
         dispatch(setSettings(false));
@@ -219,7 +224,7 @@ const Player = () => {
                     <div className='settingsBtnDiv'>
                         <button className='btn' onClick={openSettingsHandler} style={{ fontSize: 25, paddingLeft: 15, paddingRight: 15, paddingTop: 10, paddingBottom: 10, border: 'none' }}><i class="fa-solid fa-bars"></i></button>
                     </div>
-                    <div class="container-fluid controlsScreenFlex">
+                    <div className={fullScreen ? "fullScreenContainerFluid " : "container-fluid controlsScreenFlex"}>
                         <div class="settings-controls" style={settings ? { display: 'block' } : { display: 'none' }}>
                             <div class="settings-head">
                                 <strong class="heading">Settings</strong>
@@ -303,7 +308,9 @@ const Player = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="list-container lyrics-frame" style={settings ? { background: color } : { width: "100%", background: color }}>
+                        <div className={fullScreen ? "list-container lyrics-frame fullScreenListContainer" : "list-container lyrics-frame"} style={settings ? { background: color } : { width: "100%", background: color }}>
+
+
                             {playSpeed === 0 && <div className="stopDiv">
                                 <div class="btns-frame">
                                     <button class="btn-play"><i class="fa-solid fa-circle-stop"></i></button>
@@ -312,6 +319,9 @@ const Player = () => {
                             <div class="holder" >
                                 {/* <div class="lyrics-list preLine" style={emSpeed > 0 ? { animation: `scrollText ${emSpeed}s linear`, fontSize: fontSize } : {}}> */}
                                 <div class="lyrics-list preLine playerDiv" style={{ fontSize: fontSize, overflow: 'hidden', transform: `translateY(-${linesToSkip}px)`, transition: 'transform 0.5s, opacity 0.5s' }}>
+                                    <div className={fullScreen ? "fullScreenIcon d-flex justify-content-end" : 'd-flex justify-content-end'}>
+                                        <i className="fa-solid fa-expand" style={{ fontSize: 40, color: "#ffffff" }} onClick={() => setFullScreen(!fullScreen)}></i>
+                                    </div>
                                     {songToPlay.map((line, index) => (
                                         // <li key={index} className={`lyrics-line${index === currentLine ? ' current-line' : (index < currentLine ? ' passed-line' : '')}`}>{line}</li>
                                         // <li key={index}    className={`lyrics-line ${

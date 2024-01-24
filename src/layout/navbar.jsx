@@ -1,13 +1,14 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { setAuth, setToken } from '../store/slices/auth-slice';
 import Loader from '../components/loader';
 import { setSettings } from '../store/slices/song-slice';
 
 const Navbar = () => {
     const { user } = useSelector((state) => state.auth)
+    const currentRoute = useLocation()
     const [loading, setLoading] = useState(false);
     const [dropdown, setdropdown] = useState(false);
     const dispatch = useDispatch();
@@ -21,28 +22,12 @@ const Navbar = () => {
     const clickHandler = async (text) => {
         let newState;
         if (text === 'home') {
-            setActive({
-                home: true,
-                library: false,
-                setList: false
-            });
             navigate('/home');
         } else if (text === 'library') {
-            setActive({
-                home: false,
-                library: true,
-                setList: false
-            });
             navigate('/library');
         } else if (text === 'setlist') {
-            setActive({
-                home: false,
-                library: false,
-                setList: true
-            });
             navigate('/setlist');
         }
-
     };
 
 
@@ -71,11 +56,9 @@ const Navbar = () => {
         setdropdown(!dropdown);
     }
 
-    const globalSearchHandler = () =>{
+    const globalSearchHandler = () => {
         navigate('/globalSearch')
     }
-
-
     return (
         <>
             {loading && <Loader />}
@@ -85,9 +68,11 @@ const Navbar = () => {
                     <ul className="navigation">
                         {/* <li className={active.home===true && 'active'}><a onClick={() => clickHandler('home')}>Uploads</a></li> */}
                         {/* <li className={active.library===true && 'active'}><a onClick={() => clickHandler('library')}>My Library</a></li> */}
-                        <li><a className='active' onClick={() => clickHandler('home')}>Home</a></li>
-                        <li><a className='active' onClick={() => clickHandler('library')}>My Library</a></li>
-                        <li><a className='active' onClick={() => clickHandler('setlist')}>Set Lists</a></li>
+                        <li><a className={currentRoute.pathname === '/home' ? 'navLinkColor text-light' : "navLinkColor"} onClick={() => clickHandler('home')}>Home</a></li>
+
+                        <li><a className={(currentRoute.pathname === '/library' || currentRoute.pathname === '/add-song' || currentRoute.pathname === '/player') ? 'navLinkColor text-light' : "navLinkColor"} onClick={() => clickHandler('library')}>My Library</a></li>
+
+                        <li><a className={(currentRoute.pathname === '/setlist' || currentRoute.pathname === '/setlistSongs' || currentRoute.pathname === '/add-setlist' || currentRoute.pathname === '/setlist-player') ? 'navLinkColor text-light' : "navLinkColor"} onClick={() => clickHandler('setlist')}>Set Lists</a></li>
                     </ul>
                     <div className="user-box">
                         <button onClick={toggleDropdown} type="button" className="opener">
