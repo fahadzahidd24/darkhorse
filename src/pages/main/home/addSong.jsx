@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSongToEdit, setSongs, setSongsArray } from '../../../store/slices/song-slice';
 
+
 const AddSong = () => {
     const navigate = useNavigate();
     let { songToEdit, songs } = useSelector((state) => state.songs)
@@ -21,6 +22,8 @@ const AddSong = () => {
         album: songToEdit ? songToEdit.album : '',
         lyrics: songToEdit ? songToEdit.lyrics : ''
     });
+
+    console.log(iformData);
     const [error, setError] = useState({
         errorMessage: '',
         isError: false
@@ -42,19 +45,36 @@ const AddSong = () => {
             });
         }
         else {
+            let finalText = '';
+            if (iformData.lyrics.split('\n').length > 0) {
+                let formattedText = iformData.lyrics.split('\n')
+                formattedText = formattedText.map((line) => {
+                    return `<li style="color: #ffffff">${line}</li>`
+                });
+                formattedText.forEach((line, index) => {
+                    finalText += `${line}\n`;
+                })
+                console.log(finalText);
+            }else{
+                finalText = iformData.lyrics;
+                //if there is only one line, make it also <li> tag with color white
+                finalText = `<li style="color: #ffffff">${finalText}</li>`
+            }
             const formData = {
                 title: iformData.title,
                 artist: iformData.artist,
                 genre: iformData.genre || 'Rock',
                 album: iformData.album,
-                lyrics: iformData.lyrics
+                lyrics: finalText
             }
+
+            console.log({ formData });
             setLoading(true);
             try {
                 if (songToEdit.id) {
                     formData.id = songToEdit.id;
                     const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/song-update`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
-                    songs = songs.map((song)=>{
+                    songs = songs.map((song) => {
                         return {
                             ...song,
                             title: song.id === songToEdit.id ? response.data.data.title : song.title,
@@ -137,6 +157,7 @@ const AddSong = () => {
                                         <div className="form-group column-12">
                                             <textarea className="form-control" id='lyrics' name='lyrics' onChange={changeHandler} cols="30" rows="10" placeholder="ADD LYRICS" value={iformData.lyrics}></textarea>
                                         </div>
+
                                         <div className="column-12 d-flex justify-content-center">
                                             <button type="submit" className="btn">Submit</button>
                                         </div>

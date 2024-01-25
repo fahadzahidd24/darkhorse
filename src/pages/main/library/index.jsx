@@ -177,8 +177,13 @@ const Library = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`
           }
         });
-        // dispatch(setRecentlyPlayedSongs(song));
-        const songLyrics = song.lyrics.split('\n');
+        const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${song.id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+        const songLyrics = song2.data.data.lyrics.split('\n');
+        console.log({songLyrics})
         dispatch(setSongToPlay(songLyrics))
         dispatch(setSongToPlayId(song.id))
         navigate('/player')
@@ -194,7 +199,10 @@ const Library = () => {
         }
       });
       console.log(response.data.data);
-      dispatch(setSongToPlay(response.data.data));
+      let finalText = response.data.data.map((line) => {
+        return `<li style="color: #ffffff">${line}</li>`
+      });
+      dispatch(setSongToPlay(finalText))
       dispatch(setSongToPlayId(song.song_id))
       setLoading(false);
       navigate('/player')
@@ -300,11 +308,24 @@ const Library = () => {
         }
       });
       const joinedText = response.data.data.join('\n');
+      let finalText = '';
+      if (joinedText.split('\n').length > 10) {
+        let formattedText = joinedText.split('\n')
+        formattedText = formattedText.map((line) => {
+          return `<li style="color: #ffffff">${line}</li>`
+        });
+        formattedText.forEach((line, index) => {
+          finalText += `${line}\n`;
+        })
+        console.log(finalText);
+      } else {
+        finalText = joinedText;
+      }
       const formData = {
         title: song.title,
         artist: song.artist,
         genre: 'rock',
-        lyrics: joinedText
+        lyrics: finalText
       }
       console.log(formData);
       const res = await axios.post(`${process.env.REACT_APP_BASE_URL}/song-create`, formData, {
@@ -324,22 +345,22 @@ const Library = () => {
     }
   }
 
-  const reorderHandler = async() => {
+  const reorderHandler = async () => {
     const itemsIds = filteredSongs.map((item, index) => {
-        return item.id;
+      return item.id;
     });
-    console.log({itemsIds});
+    console.log({ itemsIds });
     try {
-        await axios.post(`${process.env.REACT_APP_BASE_URL}/reorder-songs`, { new_order: itemsIds }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`
-            }
-        });
-        dispatch(setSongsArray(filteredSongs));
+      await axios.post(`${process.env.REACT_APP_BASE_URL}/reorder-songs`, { new_order: itemsIds }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      dispatch(setSongsArray(filteredSongs));
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-}
+  }
 
   return (
     <>
@@ -383,7 +404,7 @@ const Library = () => {
                     </form>}
                     <button type="button" id='add-btnId' className="add-btn" onClick={globalSearchHandler} style={{ marginRight: 4 }}>
                       {/* <span className="txt">ADD NEW SONG</span> */}
-                      {!globalSearch ? <img className='globeImg' style={{ width: 50, height: 50, borderRadius: "50%", filter:'invert()' }} src="/world.png" alt="Genius Api Icon" /> :
+                      {!globalSearch ? <img className='globeImg' style={{ width: 50, height: 50, borderRadius: "50%", filter: 'invert()' }} src="/world.png" alt="Genius Api Icon" /> :
                         <i className="fa-solid fa-remove mgRemove"></i>}
                     </button>
                     <button type="button" className="add-btn" onClick={addSongHandler}>

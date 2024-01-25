@@ -3362,6 +3362,11 @@ textarea.form-control {
   padding: 0;
 }
 
+.smallBtn{
+  font-size: 30px !important;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .navLinkColor {
   display: block;
   color: #df1b23;

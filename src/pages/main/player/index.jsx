@@ -23,6 +23,8 @@ const Player = () => {
     const [isPlaying, setIsPlaying] = useState(true);
     const [linesToSkip, setLinesToSkip] = useState(0);
     const [fullScreen, setFullScreen] = useState(false);
+    const [newSongToPlay, setNewSongToPlay] = useState(songToPlay);
+    const [recentColors, setRecentColors] = useState(['#F88379', '#0ABAB5', '#FFEF00', "#E6E6FA", "#98FF98"]);
 
     const speed = playSpeed;
     let emSpeed = 121 - speed;
@@ -84,9 +86,18 @@ const Player = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
+                    const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${songs[index + 1].id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+                    console.log(song2.data.data.lyrics);
+                    // dispatch(setRecentlyPlayedSongs(song));
+                    const songLyrics = song2.data.data.lyrics.split('\n');
+                    dispatch(setSongToPlay(songLyrics))
                     // dispatch(setRecentlyPlayedSongs(songs[index + 1]));
-                    const lyrics = songs[index + 1].lyrics.split('\n');
-                    dispatch(setSongToPlay(lyrics));
+                    // const lyrics = songs[index + 1].lyrics.split('\n');
+                    // dispatch(setSongToPlay(lyrics));
                     dispatch(setSongToPlayId(songs[index + 1].id));
                     setLinesToSkip(0);
                 } catch (error) {
@@ -105,9 +116,18 @@ const Player = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
+                    const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${songs[0].id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+                    console.log(song2.data.data.lyrics);
+                    // dispatch(setRecentlyPlayedSongs(song));
+                    const songLyrics = song2.data.data.lyrics.split('\n');
+                    dispatch(setSongToPlay(songLyrics))
                     // dispatch(setRecentlyPlayedSongs(songs[0]));
-                    const lyrics = songs[0].lyrics.split('\n');
-                    dispatch(setSongToPlay(lyrics));
+                    // const lyrics = songs[0].lyrics.split('\n');
+                    // dispatch(setSongToPlay(lyrics));
                     dispatch(setSongToPlayId(songs[0].id));
                     setLinesToSkip(0);
                 } catch (error) {
@@ -132,9 +152,18 @@ const Player = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
+                    const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${songs[index - 1].id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+                    console.log(song2.data.data.lyrics);
+                    // dispatch(setRecentlyPlayedSongs(song));
+                    const songLyrics = song2.data.data.lyrics.split('\n');
+                    dispatch(setSongToPlay(songLyrics))
                     // dispatch(setRecentlyPlayedSongs(songs[index - 1]));
-                    const lyrics = songs[index - 1].lyrics.split('\n');
-                    dispatch(setSongToPlay(lyrics));
+                    // const lyrics = songs[index - 1].lyrics.split('\n');
+                    // dispatch(setSongToPlay(lyrics));
                     dispatch(setSongToPlayId(songs[index - 1].id));
                     setLinesToSkip(0);
                 } catch (error) {
@@ -211,6 +240,53 @@ const Player = () => {
                 return newSelectedLines;
             }
         });
+        const newSongToPlay2 = [...newSongToPlay];
+
+        newSongToPlay2[index] = `<li style="color: ${lineColor}">${songToPlay[index].match(/<li style="color: (.*?)">(.*?)<\/li>/)[2]}</li>`;
+        setNewSongToPlay(newSongToPlay2);
+        setRecentColors((prevRecentColors) => {
+            const index = prevRecentColors.findIndex((color) => color === lineColor);
+            if (index === -1) {
+                if (prevRecentColors.length > 7)
+                    prevRecentColors.splice(7, 1);
+                return [lineColor, ...prevRecentColors];
+            }
+            else {
+                const newRecentColors = [...prevRecentColors];
+                if (newRecentColors.length > 7)
+                    newRecentColors.splice(7, 1);
+                newRecentColors.splice(index, 1);
+                return [lineColor, ...newRecentColors];
+                // newRecentColors.splice(index, 1);
+                // return [lineColor, ...newRecentColors];
+            }
+        });
+    }
+
+
+    const saveHandler = async () => {
+        if (newSongToPlay.length > 0) {
+            const finalText = newSongToPlay.join('\n');
+            const formData = {
+                id: songToPlayId,
+                lyrics: finalText
+            }
+            console.log({ formData });
+            console.log({ songToPlay });
+            setLoading(true);
+            try {
+                await axios.post(`${process.env.REACT_APP_BASE_URL}/song-update`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }
+
+    const selectColorHandler = (color) => {
+        console.log(color);
+        setLineColor(color);
     }
 
     return (
@@ -252,7 +328,7 @@ const Player = () => {
                                             <ColorPicker color={fontColor} setColor={setFontColor} onClose={() => setIsFontColorPickerOpen(false)} />
                                         )}
                                         {isLineColorPickerOpen && (
-                                            <ColorPicker color={lineColor} line={true} setColor={setLineColor} onClose={() => setIsLineColorPickerOpen(false)} />
+                                            <ColorPicker color={lineColor} line={true} setColor={setLineColor} onClose={() => setIsLineColorPickerOpen(false)} recentColors={recentColors} onSelectColor={selectColorHandler} />
                                         )}
                                     </div>
                                     <div class="frame">
@@ -286,12 +362,12 @@ const Player = () => {
                                         <button class="color-picker"><i class="fa-solid fa-palette"></i></button>
                                     </div> */}
                                 </div>
-                                {/* <div class="control-box">
+                                <div class="control-box">
                                     <div class="range-controls">
                                         <strong class="txt">Auto Scroll Speed</strong>
-                                        <Slider aria-label="Volume" value={playSpeed} onChange={handleChangeSpeedSlider} min={1} />
+                                        <Slider aria-label="Volume" value={playSpeed} onChange={handleChangeSpeedSlider} min={0} />
                                     </div>
-                                </div> */}
+                                </div>
                                 <div class="control-box">
                                     <strong class="txt">Controls</strong>
                                     <div class="btns-frame d-flex flex-column">
@@ -306,19 +382,23 @@ const Player = () => {
                                         </div> */}
                                     </div>
                                 </div>
+                                <div class="control-box d-flex justify-content-center align-items-center">
+                                    <button className='btn smallBtn' onClick={saveHandler}>Save</button>
+                                </div>
                             </div>
                         </div>
                         <div className={fullScreen ? "list-container lyrics-frame fullScreenListContainer" : "list-container lyrics-frame"} style={settings ? { background: color } : { width: "100%", background: color }}>
 
 
-                            {playSpeed === 0 && <div className="stopDiv">
+                            {/* {playSpeed === 0 && <div className="stopDiv">
                                 <div class="btns-frame">
                                     <button class="btn-play"><i class="fa-solid fa-circle-stop"></i></button>
                                 </div>
-                            </div>}
+                            </div>} */}
                             <div class="holder" >
                                 {/* <div class="lyrics-list preLine" style={emSpeed > 0 ? { animation: `scrollText ${emSpeed}s linear`, fontSize: fontSize } : {}}> */}
-                                <div class="lyrics-list preLine playerDiv" style={{ fontSize: fontSize, overflow: 'hidden', transform: `translateY(-${linesToSkip}px)`, transition: 'transform 0.5s, opacity 0.5s' }}>
+                                <div class="lyrics-list preLine playerDiv" style={emSpeed > 0 ? { animation: `scrollText ${emSpeed}s linear`, fontSize: fontSize } : { fontSize: fontSize, overflow: 'hidden', transform: `translateY(-${linesToSkip}px)`, transition: 'transform 0.5s, opacity 0.5s' }}>
+
                                     <div className={fullScreen ? "fullScreenIcon d-flex justify-content-end" : 'd-flex justify-content-end'}>
                                         <i className="fa-solid fa-expand" style={{ fontSize: 40, color: "#ffffff" }} onClick={() => setFullScreen(!fullScreen)}></i>
                                     </div>
@@ -334,8 +414,12 @@ const Player = () => {
                                         // style={{ opacity: index < currentLine ? 0.5 : fontColor, color: fontColor }}>{line}</li>
                                         <li key={index} className="lyrics-line"
                                             style={{
-                                                color: selectedLines.find((lineObj) => lineObj.index === index) ? selectedLines.find((lineObj) => lineObj.index === index).color : fontColor,
-                                            }} onClick={selectLinesHandler.bind(null, index, line)}>{line}</li>
+                                                color: selectedLines.find((lineObj) => lineObj.index === index) ? selectedLines.find((lineObj) => lineObj.index === index).color : line.match(/style="color: (.*?)"/)[1] || fontColor,
+                                            }} onClick={selectLinesHandler.bind(null, index, line)}>{
+                                                line.match(/style="color: (.*?)"/)
+                                                    ? line.match(/<li style="color: (.*?)">(.*?)<\/li>/)[2]
+                                                    : line
+                                            }</li>
                                     ))}
                                 </div>
                             </div>

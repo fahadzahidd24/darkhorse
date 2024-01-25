@@ -252,12 +252,12 @@ const SetlistPlayer = () => {
                                         <button class="color-picker"><i class="fa-solid fa-palette"></i></button>
                                     </div> */}
                                 </div>
-                                {/* <div class="control-box">
+                                <div class="control-box">
                                     <div class="range-controls">
                                         <strong class="txt">Auto Scroll Speed</strong>
-                                        <Slider aria-label="Volume" value={playSpeed} onChange={handleChangeSpeedSlider} min={1} />
+                                        <Slider aria-label="Volume" value={playSpeed} onChange={handleChangeSpeedSlider} min={0} />
                                     </div>
-                                </div> */}
+                                </div>
                                 <div class="control-box">
                                     <strong class="txt">Controls</strong>
                                     <div class="btns-frame d-flex flex-column">
@@ -275,14 +275,14 @@ const SetlistPlayer = () => {
                             </div>
                         </div>
                         <div className={fullScreen ? "list-container lyrics-frame fullScreenListContainer" : "list-container lyrics-frame"} style={settings ? { background: color } : { width: "100%", background: color }}>
-                            {playSpeed === 0 && <div className="stopDiv">
+                            {/* {playSpeed === 0 && <div className="stopDiv">
                                 <div class="btns-frame">
                                     <button class="btn-play"><i class="fa-solid fa-circle-stop"></i></button>
                                 </div>
-                            </div>}
+                            </div>} */}
                             <div class="holder" >
                                 {/* <div class="lyrics-list preLine" style={emSpeed > 0 ? { animation: `scrollText ${emSpeed}s linear`, fontSize: fontSize } : {}}> */}
-                                <div class="lyrics-list preLine playerDiv" style={{ fontSize: fontSize, overflow: 'hidden', transform: `translateY(-${linesToSkip}px)`, transition: 'transform 0.5s, opacity 0.5s' }}>
+                                <div class="lyrics-list preLine playerDiv" style={emSpeed > 0 ? { animation: `scrollText ${emSpeed}s linear`, fontSize: fontSize } : { fontSize: fontSize, overflow: 'hidden', transform: `translateY(-${linesToSkip}px)`, transition: 'transform 0.5s, opacity 0.5s' }}>
                                     <div className={fullScreen ? "fullScreenIcon d-flex justify-content-end" : 'd-flex justify-content-end'}>
                                         <i className="fa-solid fa-expand" style={{ fontSize: 40, color: "#ffffff" }} onClick={() => setFullScreen(!fullScreen)}></i>
                                     </div>
