@@ -107,18 +107,25 @@ const SetlistSongs = () => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
+            const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${song.id}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            const songLyrics = song2.data.data.lyrics.split('\n');
+            console.log({ songLyrics })
+            // const songLyrics = song.lyrics.split('\n');
+            dispatch(setSongToPlay(songLyrics))
+            dispatch(setSetListSongToPlayId(song.id))
+            navigate('/setlist-player')
         } catch (error) {
             console.log(error);
         } finally {
             setLoading(false);
         }
-        const songLyrics = song.lyrics.split('\n');
-        dispatch(setSongToPlay(songLyrics))
-        dispatch(setSetListSongToPlayId(song.id))
-        navigate('/setlist-player')
     }
 
-    const reorderHandler = async() => {
+    const reorderHandler = async () => {
         const itemsIds = items.map((item, index) => {
             return item.id;
         });

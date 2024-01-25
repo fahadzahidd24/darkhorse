@@ -7,15 +7,15 @@ import { HexColorPicker } from 'react-colorful'
 import ColorPicker from '../../../components/colorPicker'
 import axios from 'axios'
 import Loader from '../../../components/loader'
-import { setSetListSongToPlayId } from '../../../store/slices/setlist-slice'
 
-const SetlistPlayer = () => {
+const Player = () => {
+    //const { songToPlay, songToPlayId, settings, songs } = useSelector((state) => state.songs)
     const { setlistSongToPlayId, setListSongs } = useSelector((state) => state.setlist);
     const { songToPlay, settings } = useSelector((state) => state.songs);
-    console.log(setListSongs);
     const [color, setColor] = useState("#000000");
     const [loading, setLoading] = useState(false);
     const [fontColor, setFontColor] = useState("#ffffff");
+    const [lineColor, setLineColor] = useState(fontColor);
     const [currentLine, setCurrentLine] = useState(0);
     const [value, setValue] = useState(30);
     const [speedAtStop, setSpeedAtStop] = useState();
@@ -25,6 +25,8 @@ const SetlistPlayer = () => {
     const [isPlaying, setIsPlaying] = useState(true);
     const [linesToSkip, setLinesToSkip] = useState(0);
     const [fullScreen, setFullScreen] = useState(false);
+    const [newSongToPlay, setNewSongToPlay] = useState(songToPlay);
+    const [recentColors, setRecentColors] = useState(['#F88379', '#0ABAB5', '#FFEF00', "#E6E6FA", "#98FF98"]);
 
     const speed = playSpeed;
     let emSpeed = 121 - speed;
@@ -33,11 +35,8 @@ const SetlistPlayer = () => {
 
     const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
     const [isFontColorPickerOpen, setIsFontColorPickerOpen] = useState(false);
-
-    if (fullScreen) {
-        dispatch(setSettings(false))
-    }
-
+    const [isLineColorPickerOpen, setIsLineColorPickerOpen] = useState(false);
+    const [selectedLines, setSelectedLines] = useState([]);
 
     const togglePlay = () => {
         setIsPlaying((prevIsPlaying) => !prevIsPlaying);
@@ -89,10 +88,19 @@ const SetlistPlayer = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    // dispatch(setRecentlyPlayedSongs(setListSongs[index + 1]));
-                    const lyrics = setListSongs[index + 1].lyrics.split('\n');
-                    dispatch(setSongToPlay(lyrics));
-                    dispatch(setSetListSongToPlayId(setListSongs[index + 1].id));
+                    const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${setListSongs[index + 1].id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+                    console.log(song2.data.data.lyrics);
+                    // dispatch(setRecentlyPlayedSongs(song));
+                    const songLyrics = song2.data.data.lyrics.split('\n');
+                    dispatch(setSongToPlay(songLyrics))
+                    // dispatch(setRecentlyPlayedSongs(songs[index + 1]));
+                    // const lyrics = songs[index + 1].lyrics.split('\n');
+                    // dispatch(setSongToPlay(lyrics));
+                    dispatch(setSongToPlayId(setListSongs[index + 1].id));
                     setLinesToSkip(0);
                 } catch (error) {
                     console.log(error);
@@ -110,10 +118,19 @@ const SetlistPlayer = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    // dispatch(setRecentlyPlayedSongs(setListSongs[0]));
-                    const lyrics = setListSongs[0].lyrics.split('\n');
-                    dispatch(setSongToPlay(lyrics));
-                    dispatch(setSetListSongToPlayId(setListSongs[0].id));
+                    const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${setListSongs[0].id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+                    console.log(song2.data.data.lyrics);
+                    // dispatch(setRecentlyPlayedSongs(song));
+                    const songLyrics = song2.data.data.lyrics.split('\n');
+                    dispatch(setSongToPlay(songLyrics))
+                    // dispatch(setRecentlyPlayedSongs(songs[0]));
+                    // const lyrics = songs[0].lyrics.split('\n');
+                    // dispatch(setSongToPlay(lyrics));
+                    dispatch(setSongToPlayId(setListSongs[0].id));
                     setLinesToSkip(0);
                 } catch (error) {
                     console.log(error);
@@ -137,10 +154,19 @@ const SetlistPlayer = () => {
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         }
                     });
-                    // dispatch(setRecentlyPlayedSongs(setListSongs[index - 1]));
-                    const lyrics = setListSongs[index - 1].lyrics.split('\n');
-                    dispatch(setSongToPlay(lyrics));
-                    dispatch(setSetListSongToPlayId(setListSongs[index - 1].id));
+                    const song2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/song/${setListSongs[index - 1].id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+                    console.log(song2.data.data.lyrics);
+                    // dispatch(setRecentlyPlayedSongs(song));
+                    const songLyrics = song2.data.data.lyrics.split('\n');
+                    dispatch(setSongToPlay(songLyrics))
+                    // dispatch(setRecentlyPlayedSongs(songs[index - 1]));
+                    // const lyrics = songs[index - 1].lyrics.split('\n');
+                    // dispatch(setSongToPlay(lyrics));
+                    dispatch(setSongToPlayId(setListSongs[index - 1].id));
                     setLinesToSkip(0);
                 } catch (error) {
                     console.log(error);
@@ -166,6 +192,10 @@ const SetlistPlayer = () => {
         return () => clearInterval(scrollInterval);
     }, [isPlaying, songToPlay, currentLine]);
 
+    if (fullScreen) {
+        dispatch(setSettings(false))
+    }
+
     const closeSettingsHandler = () => {
         dispatch(setSettings(false));
     }
@@ -190,6 +220,73 @@ const SetlistPlayer = () => {
 
     const openFontColorPicker = () => {
         setIsFontColorPickerOpen(true);
+    }
+
+    const openLineColorPicker = () => {
+        setIsLineColorPickerOpen(true);
+    }
+
+    const selectLinesHandler = (index) => {
+        const object = {
+            index: index,
+            color: lineColor
+        }
+        setSelectedLines((prevSelectedLines) => {
+            const index = prevSelectedLines.findIndex((lineObj) => lineObj.index === object.index);
+            if (index === -1) {
+                return [...prevSelectedLines, object];
+            }
+            else {
+                const newSelectedLines = [...prevSelectedLines];
+                newSelectedLines.splice(index, 1);
+                return newSelectedLines;
+            }
+        });
+        const newSongToPlay2 = [...newSongToPlay];
+
+        newSongToPlay2[index] = `<li style="color: ${lineColor}">${songToPlay[index].match(/<li style="color: (.*?)">(.*?)<\/li>/)[2]}</li>`;
+        setNewSongToPlay(newSongToPlay2);
+        setRecentColors((prevRecentColors) => {
+            const index = prevRecentColors.findIndex((color) => color === lineColor);
+            if (index === -1) {
+                if (prevRecentColors.length > 7)
+                    prevRecentColors.splice(7, 1);
+                return [lineColor, ...prevRecentColors];
+            }
+            else {
+                const newRecentColors = [...prevRecentColors];
+                if (newRecentColors.length > 7)
+                    newRecentColors.splice(7, 1);
+                newRecentColors.splice(index, 1);
+                return [lineColor, ...newRecentColors];
+                // newRecentColors.splice(index, 1);
+                // return [lineColor, ...newRecentColors];
+            }
+        });
+    }
+
+
+    const saveHandler = async () => {
+        if (newSongToPlay.length > 0) {
+            const finalText = newSongToPlay.join('\n');
+            const formData = {
+                id: setlistSongToPlayId,
+                lyrics: finalText
+            }
+            setLoading(true);
+            try {
+                await axios.post(`${process.env.REACT_APP_BASE_URL}/song-update`, formData, { headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } });
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }
+
+    const selectColorHandler = (color) => {
+        console.log(color);
+        setLineColor(color);
     }
 
     return (
@@ -230,6 +327,19 @@ const SetlistPlayer = () => {
                                         {isFontColorPickerOpen && (
                                             <ColorPicker color={fontColor} setColor={setFontColor} onClose={() => setIsFontColorPickerOpen(false)} />
                                         )}
+                                        {isLineColorPickerOpen && (
+                                            <ColorPicker color={lineColor} line={true} setColor={setLineColor} onClose={() => setIsLineColorPickerOpen(false)} recentColors={recentColors} onSelectColor={selectColorHandler} />
+                                        )}
+                                    </div>
+                                    <div class="frame">
+                                        <div className='d-flex w-full justify-content-between'>
+                                            <strong class="txt">LINE COLOR</strong>
+                                        </div>
+                                        <div className='d-flex w-full justify-content-between'>
+                                            <button class="color-picker" onClick={openLineColorPicker}>
+                                                <i class="fa-solid fa-palette"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="control-box">
@@ -272,9 +382,14 @@ const SetlistPlayer = () => {
                                         </div> */}
                                     </div>
                                 </div>
+                                <div class="control-box d-flex justify-content-center align-items-center">
+                                    <button className='btn smallBtn' onClick={saveHandler}>Save</button>
+                                </div>
                             </div>
                         </div>
                         <div className={fullScreen ? "list-container lyrics-frame fullScreenListContainer" : "list-container lyrics-frame"} style={settings ? { background: color } : { width: "100%", background: color }}>
+
+
                             {/* {playSpeed === 0 && <div className="stopDiv">
                                 <div class="btns-frame">
                                     <button class="btn-play"><i class="fa-solid fa-circle-stop"></i></button>
@@ -283,6 +398,7 @@ const SetlistPlayer = () => {
                             <div class="holder" >
                                 {/* <div class="lyrics-list preLine" style={emSpeed > 0 ? { animation: `scrollText ${emSpeed}s linear`, fontSize: fontSize } : {}}> */}
                                 <div class="lyrics-list preLine playerDiv" style={emSpeed > 0 ? { animation: `scrollText ${emSpeed}s linear`, fontSize: fontSize } : { fontSize: fontSize, overflow: 'hidden', transform: `translateY(-${linesToSkip}px)`, transition: 'transform 0.5s, opacity 0.5s' }}>
+
                                     <div className={fullScreen ? "fullScreenIcon d-flex justify-content-end" : 'd-flex justify-content-end'}>
                                         <i className="fa-solid fa-expand" style={{ fontSize: 40, color: "#ffffff" }} onClick={() => setFullScreen(!fullScreen)}></i>
                                     </div>
@@ -297,7 +413,13 @@ const SetlistPlayer = () => {
                                         // }`}
                                         // style={{ opacity: index < currentLine ? 0.5 : fontColor, color: fontColor }}>{line}</li>
                                         <li key={index} className="lyrics-line"
-                                            style={{ color: fontColor }}>{line}</li>
+                                            style={{
+                                                color: selectedLines.find((lineObj) => lineObj.index === index) ? selectedLines.find((lineObj) => lineObj.index === index).color : line.match(/style="color: (.*?)"/)[1] || fontColor,
+                                            }} onClick={selectLinesHandler.bind(null, index, line)}>{
+                                                line.match(/style="color: (.*?)"/)
+                                                    ? line.match(/<li style="color: (.*?)">(.*?)<\/li>/)[2]
+                                                    : line
+                                            }</li>
                                     ))}
                                 </div>
                             </div>
@@ -318,4 +440,4 @@ const SetlistPlayer = () => {
     )
 }
 
-export default SetlistPlayer;
+export default Player
