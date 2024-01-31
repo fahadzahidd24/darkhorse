@@ -27,7 +27,7 @@ const Intro = () => {
                             </div>
                             <div className="splash-image-frame">
                                 <div className="holder imgHolder">
-                                    <div className="duplicate" title="STAGEPRO">STAGEPRO</div>
+                                    <div className="duplicate stageProVertical" title="STAGEPRO">STAGEPRO</div>
                                     <div className="image"><img src="/rockConcert.jpeg" alt="image" /></div>
                                 </div>
                             </div>
